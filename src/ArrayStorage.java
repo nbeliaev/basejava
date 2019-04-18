@@ -4,18 +4,18 @@
 public class ArrayStorage {
 
     private Resume[] storage;
-    private final int MAX_CAPACITY;
     private int currentSize;
 
     ArrayStorage() {
-        MAX_CAPACITY = 10000;
-        storage = new Resume[MAX_CAPACITY];
+        storage = new Resume[10000];
     }
 
     Resume get(String uuid) {
-        for (int i = 0; i < currentSize; i++)
-            if (storage[i].uuid.equals(uuid))
+        for (int i = 0; i < currentSize; i++) {
+            if (storage[i].uuid.equals(uuid)) {
                 return storage[i];
+            }
+        }
         return null;
     }
 
@@ -27,17 +27,7 @@ public class ArrayStorage {
     void delete(String uuid) {
         for (int i = 0; i < currentSize; i++) {
             if (storage[i].uuid.equals(uuid)) {
-
-                storage[i] = null;
-                Resume[] temp = new Resume[MAX_CAPACITY];
-                int counter = 0;
-                for (int j = 0; j < currentSize; j++) {
-                    if (storage[j] != null) {
-                        temp[counter] = storage[j];
-                        counter++;
-                    }
-                }
-                storage = temp;
+                System.arraycopy(storage, i+1, storage, i, currentSize);
                 currentSize--;
                 break;
             }
