@@ -1,9 +1,6 @@
 /**
  * Array based storage for Resumes
  */
-
-import java.util.Arrays;
-
 public class ArrayStorage {
 
     private Resume[] storage;
@@ -16,16 +13,10 @@ public class ArrayStorage {
     }
 
     Resume get(String uuid) {
-        Resume resume = null;
-
-        for (int i = 0; i < currentSize; i++) {
-            if (storage[i].uuid.equals(uuid)) {
-                resume = storage[i];
-                break;
-            }
-        }
-
-        return resume;
+        for (int i = 0; i < currentSize; i++)
+            if (storage[i].uuid.equals(uuid))
+                return storage[i];
+        return null;
     }
 
     void save(Resume r) {
@@ -34,25 +25,23 @@ public class ArrayStorage {
     }
 
     void delete(String uuid) {
-        Resume resume = get(uuid);
-        int i = Arrays.asList(storage).indexOf(resume);
-        if (i == -1)
-            return;
+        for (int i = 0; i < currentSize; i++) {
+            if (storage[i].uuid.equals(uuid)) {
 
-        storage[i] = null;
-        currentSize--;
-
-        Resume[] temp = new Resume[MAX_CAPACITY];
-        int counter = 0;
-        for (Resume r : storage) {
-
-            if (r instanceof Resume) {
-                temp[counter] = r;
-                counter++;
+                storage[i] = null;
+                Resume[] temp = new Resume[MAX_CAPACITY];
+                int counter = 0;
+                for (int j = 0; j < currentSize; j++) {
+                    if (storage[j] != null) {
+                        temp[counter] = storage[j];
+                        counter++;
+                    }
+                }
+                storage = temp;
+                currentSize--;
+                break;
             }
-
         }
-        storage = temp;
     }
 
     int size() {
@@ -60,17 +49,15 @@ public class ArrayStorage {
     }
 
     void clear() {
-
         for (int i = 0; i < currentSize; i++) {
             storage[i] = null;
         }
         currentSize = 0;
-
     }
 
     Resume[] getAll() {
         Resume[] resumes = new Resume[currentSize];
-        System.arraycopy(storage,0, resumes, 0, currentSize);
+        System.arraycopy(storage, 0, resumes, 0, currentSize);
         return resumes;
     }
 
