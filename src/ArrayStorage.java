@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 /**
  * Array based storage for Resumes
  */
@@ -5,32 +7,53 @@ public class ArrayStorage {
 
     private Resume[] storage;
     private int currentSize;
+    private final int MAX_CAPACITY = 10000;
 
     ArrayStorage() {
-        storage = new Resume[10000];
+        storage = new Resume[MAX_CAPACITY];
     }
 
     Resume get(String uuid) {
-        for (int i = 0; i < currentSize; i++) {
-            if (storage[i].uuid.equals(uuid)) {
-                return storage[i];
-            }
+        int index = findIndexResume(uuid);
+        if (index >= 0) {
+            return storage[index];
+        } else {
+            System.out.println("Resume hasn't been found.");
+            return null;
         }
-        return null;
     }
 
-    void save(Resume r) {
-        storage[currentSize] = r;
+    void update(Resume resume) {
+        int index = findIndexResume(resume.getUuid());
+        if (index >= 0) {
+            storage[index] = resume;
+        } else {
+            System.out.println("Resume hasn't been found.");
+        }
+    }
+
+    void save(Resume resume) {
+        if (currentSize == MAX_CAPACITY) {
+            System.out.println("Resume hasn't been added. Maximum storage size reached.");
+            return;
+        }
+
+        int index = findIndexResume(resume.getUuid());
+        if (index >= 0) {
+            System.out.println("Resume hasn't been added. Resume with such uuid exists.");
+            return;
+        }
+        storage[currentSize] = resume;
         currentSize++;
     }
 
     void delete(String uuid) {
-        for (int i = 0; i < currentSize; i++) {
-            if (storage[i].uuid.equals(uuid)) {
-                System.arraycopy(storage, i+1, storage, i, currentSize-(i+1));
-                currentSize--;
-                break;
-            }
+        int index = findIndexResume(uuid);
+        if (index >= 0) {
+            System.arraycopy(storage, index + 1, storage, index, currentSize - index + 1);
+            currentSize--;
+        } else {
+            System.out.println("Resume hasn't been found.");
         }
     }
 
@@ -39,16 +62,21 @@ public class ArrayStorage {
     }
 
     void clear() {
-        for (int i = 0; i < currentSize; i++) {
-            storage[i] = null;
-        }
+        Arrays.fill(storage, null);
         currentSize = 0;
     }
 
     Resume[] getAll() {
-        Resume[] resumes = new Resume[currentSize];
-        System.arraycopy(storage, 0, resumes, 0, currentSize);
-        return resumes;
+        return Arrays.copyOf(storage, currentSize);
+    }
+
+    private int findIndexResume(String uuid) {
+        for (int i = 0; i < currentSize; i++) {
+            if (storage[i].getUuid().equals(uuid)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
 }
