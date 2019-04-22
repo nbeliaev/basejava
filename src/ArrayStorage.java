@@ -50,7 +50,8 @@ public class ArrayStorage {
     void delete(String uuid) {
         int index = findIndexResume(uuid);
         if (index >= 0) {
-            System.arraycopy(storage, index + 1, storage, index, currentSize - index + 1);
+            storage[index] = storage[currentSize-1];
+            storage[currentSize-1] = null;
             currentSize--;
         } else {
             System.out.println("Resume hasn't been found.");
