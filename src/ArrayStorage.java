@@ -59,7 +59,7 @@ public class ArrayStorage {
     }
 
     void clear() {
-        Arrays.fill(storage, 0, currentSize - 1, null);
+        Arrays.fill(storage, 0, currentSize, null);
         currentSize = 0;
     }
 
