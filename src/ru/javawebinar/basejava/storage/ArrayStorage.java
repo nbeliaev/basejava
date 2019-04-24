@@ -7,10 +7,10 @@ import java.util.Arrays;
 /**
  * Array based storage for Resumes
  */
-public class ArrayStorage {
+public class ArrayStorage implements Storage {
 
     private int currentSize;
-    private final int MAX_CAPACITY = 10_000;
+    private static final int MAX_CAPACITY = 10_000;
     private final Resume[] storage = new Resume[MAX_CAPACITY];
 
     public Resume get(String uuid) {
