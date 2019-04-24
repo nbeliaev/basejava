@@ -1,3 +1,7 @@
+package ru.javawebinar.basejava.storage;
+
+import ru.javawebinar.basejava.model.Resume;
+
 import java.util.Arrays;
 
 /**
@@ -7,9 +11,9 @@ public class ArrayStorage {
 
     private int currentSize;
     private final int MAX_CAPACITY = 10_000;
-    private Resume[] storage = new Resume[MAX_CAPACITY];
+    private final Resume[] storage = new Resume[MAX_CAPACITY];
 
-    Resume get(String uuid) {
+    public Resume get(String uuid) {
         int index = findIndex(uuid);
         if (index >= 0) {
             return storage[index];
@@ -19,7 +23,7 @@ public class ArrayStorage {
         }
     }
 
-    void update(Resume resume) {
+    public void update(Resume resume) {
         int index = findIndex(resume.getUuid());
         if (index >= 0) {
             storage[index] = resume;
@@ -28,7 +32,7 @@ public class ArrayStorage {
         }
     }
 
-    void save(Resume resume) {
+    public void save(Resume resume) {
         if (currentSize == MAX_CAPACITY) {
             System.out.println("Resume hasn't been added. Maximum storage size reached.");
             return;
@@ -43,7 +47,7 @@ public class ArrayStorage {
         currentSize++;
     }
 
-    void delete(String uuid) {
+    public void delete(String uuid) {
         int index = findIndex(uuid);
         if (index >= 0) {
             storage[index] = storage[currentSize - 1];
@@ -54,16 +58,16 @@ public class ArrayStorage {
         }
     }
 
-    int size() {
+    public int size() {
         return currentSize;
     }
 
-    void clear() {
+    public void clear() {
         Arrays.fill(storage, 0, currentSize, null);
         currentSize = 0;
     }
 
-    Resume[] getAll() {
+    public Resume[] getAll() {
         return Arrays.copyOf(storage, currentSize);
     }
 
