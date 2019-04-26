@@ -15,8 +15,9 @@ public class ArrayStorage extends AbstractArrayStorage {
     }
 
     @Override
-    protected void sortStorage() {
-
+    protected void sort(int i) {
+        // this isn't sorted storage
+        // do nothing
     }
 
 }

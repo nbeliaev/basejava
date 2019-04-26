@@ -13,7 +13,7 @@ public interface Storage {
 
     void save(Resume resume);
 
-    public void delete(String uuid);
+    void delete(String uuid);
 
     int size();
 

@@ -6,9 +6,9 @@ import java.util.Arrays;
 
 public abstract class AbstractArrayStorage implements Storage {
 
-    int currentSize;
-    private static final int MAX_CAPACITY = 10_000;
-    final Resume[] STORAGE = new Resume[MAX_CAPACITY];
+    protected int currentSize;
+    protected final int MAX_CAPACITY = 10_000;
+    protected final Resume[] STORAGE = new Resume[MAX_CAPACITY];
 
     public int size() {
         return currentSize;
@@ -36,16 +36,14 @@ public abstract class AbstractArrayStorage implements Storage {
         }
         STORAGE[currentSize] = resume;
         currentSize++;
-        sortStorage();
+        sort(index);
     }
 
     public void delete(String uuid) {
         int index = findIndex(uuid);
         if (index >= 0) {
-            STORAGE[index] = STORAGE[currentSize - 1];
-            STORAGE[currentSize - 1] = null;
+            System.arraycopy(STORAGE, index + 1, STORAGE, index, currentSize - index - 1);
             currentSize--;
-            sortStorage();
         } else {
             System.out.println("Resume hasn't been found.");
         }
@@ -55,7 +53,6 @@ public abstract class AbstractArrayStorage implements Storage {
         int index = findIndex(resume.getUuid());
         if (index >= 0) {
             STORAGE[index] = resume;
-            sortStorage();
         } else {
             System.out.println("Resume hasn't been found.");
         }
@@ -73,5 +70,5 @@ public abstract class AbstractArrayStorage implements Storage {
 
     protected abstract int findIndex(String uuid);
 
-    protected abstract void sortStorage();
+    protected abstract void sort(int i);
 }
