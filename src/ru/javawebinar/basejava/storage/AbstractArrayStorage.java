@@ -34,7 +34,7 @@ public abstract class AbstractArrayStorage implements Storage {
             System.out.println("Resume hasn't been added. Resume with such uuid exists.");
             return;
         }
-        insert(resume, index);
+        insert(index, resume);
         currentSize++;
     }
 
@@ -42,6 +42,7 @@ public abstract class AbstractArrayStorage implements Storage {
         int index = findIndex(uuid);
         if (index >= 0) {
             remove(index);
+            STORAGE[currentSize - 1] = null;
             currentSize--;
         } else {
             System.out.println("Resume hasn't been found.");
@@ -69,7 +70,7 @@ public abstract class AbstractArrayStorage implements Storage {
 
     protected abstract void remove(int i);
 
-    protected abstract void insert(Resume resume, int index);
+    protected abstract void insert(int index, Resume resume);
 
     protected abstract int findIndex(String uuid);
 

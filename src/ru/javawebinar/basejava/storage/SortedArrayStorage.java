@@ -12,17 +12,17 @@ public class SortedArrayStorage extends AbstractArrayStorage {
     }
 
     @Override
-    protected void insert(Resume resume, int i) {
+    protected void insert(int i, Resume resume) {
         if (currentSize == 0) {
             STORAGE[currentSize] = resume;
         } else {
             int index = -i - 1;
-            Resume[] resumes = Arrays.copyOfRange(STORAGE, index, currentSize);
+            System.arraycopy(STORAGE, index, STORAGE, index + 1, currentSize - index);
             STORAGE[index] = resume;
-            System.arraycopy(resumes, 0, STORAGE, index + 1, resumes.length);
         }
     }
 
+    @Override
     protected int findIndex(String uuid) {
         Resume r = new Resume();
         r.setUuid(uuid);
