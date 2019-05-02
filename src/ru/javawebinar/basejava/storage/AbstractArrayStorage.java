@@ -1,5 +1,8 @@
 package ru.javawebinar.basejava.storage;
 
+import ru.javawebinar.basejava.exception.ExistStorageException;
+import ru.javawebinar.basejava.exception.NotExistStorageException;
+import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
 
 import java.util.Arrays;
@@ -25,14 +28,12 @@ public abstract class AbstractArrayStorage implements Storage {
 
     public void save(Resume resume) {
         if (currentSize == MAX_CAPACITY) {
-            System.out.println("Resume hasn't been added. Maximum storage size reached.");
-            return;
+            throw new StorageException("Resume hasn't been added. Maximum storage size reached.", resume.getUuid());
         }
 
         int index = findIndex(resume.getUuid());
         if (index >= 0) {
-            System.out.println("Resume hasn't been added. Resume with such uuid exists.");
-            return;
+            throw new ExistStorageException(resume.getUuid());
         }
         insert(index, resume);
         currentSize++;
@@ -45,7 +46,7 @@ public abstract class AbstractArrayStorage implements Storage {
             STORAGE[currentSize - 1] = null;
             currentSize--;
         } else {
-            System.out.println("Resume hasn't been found.");
+            throw new NotExistStorageException(uuid);
         }
     }
 
@@ -54,7 +55,7 @@ public abstract class AbstractArrayStorage implements Storage {
         if (index >= 0) {
             STORAGE[index] = resume;
         } else {
-            System.out.println("Resume hasn't been found.");
+            throw new NotExistStorageException(resume.getUuid());
         }
     }
 
@@ -63,12 +64,11 @@ public abstract class AbstractArrayStorage implements Storage {
         if (index >= 0) {
             return STORAGE[index];
         } else {
-            System.out.println("Resume hasn't been found.");
-            return null;
+            throw new ExistStorageException(uuid);
         }
     }
 
-    protected abstract void remove(int i);
+    protected abstract void remove(int index);
 
     protected abstract void insert(int index, Resume resume);
 
