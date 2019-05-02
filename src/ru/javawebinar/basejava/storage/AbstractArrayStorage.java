@@ -64,7 +64,7 @@ public abstract class AbstractArrayStorage implements Storage {
         if (index >= 0) {
             return STORAGE[index];
         } else {
-            throw new ExistStorageException(uuid);
+            throw new NotExistStorageException(uuid);
         }
     }
 
