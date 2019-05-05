@@ -12,7 +12,6 @@ import static org.junit.Assert.*;
 public abstract class AbstractArrayStorageTest {
 
     private final Storage storage;
-    private final static int MAX_CAPACITY = 10_000;
     private final static String UUID_1 = "uuid1";
     private final static String UUID_2 = "uuid2";
     private final static String UUID_3 = "uuid3";
@@ -66,7 +65,7 @@ public abstract class AbstractArrayStorageTest {
     public void saveOverflow() {
         storage.clear();
         try {
-            for (int i = 0; i < MAX_CAPACITY; i++) {
+            for (int i = 0; i < AbstractArrayStorage.MAX_CAPACITY; i++) {
                 storage.save(new Resume());
             }
         } catch (StorageException e) {
@@ -89,10 +88,9 @@ public abstract class AbstractArrayStorageTest {
 
     @Test
     public void update() {
-        Resume temp = new Resume();
-        storage.save(temp);
-        storage.update(temp);
-        assertEquals(temp, storage.get(temp.getUuid()));
+        Resume resume = new Resume(UUID_1);
+        storage.update(resume);
+        assertSame(resume, storage.get(UUID_1));
     }
 
     @Test(expected = NotExistStorageException.class)
