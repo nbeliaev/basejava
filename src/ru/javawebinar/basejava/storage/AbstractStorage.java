@@ -5,31 +5,28 @@ import ru.javawebinar.basejava.model.Resume;
 
 public abstract class AbstractStorage implements Storage {
 
-    @Override
     public Resume get(String uuid) {
         int index = findIndex(uuid);
         if (index >= 0) {
-            return getForIndex(index);
+            return getByIndex(index);
         } else {
             throw new NotExistStorageException(uuid);
         }
     }
 
-    @Override
     public void update(Resume resume) {
         int index = findIndex(resume.getUuid());
         if (index >= 0) {
-            updateForIndex(index, resume);
+            updateByIndex(index, resume);
         } else {
             throw new NotExistStorageException(resume.getUuid());
         }
     }
 
-    @Override
     public void delete(String uuid) {
         int index = findIndex(uuid);
         if (index >= 0) {
-            removeForIndex(index);
+            removeByIndex(index);
         } else {
             throw new NotExistStorageException(uuid);
         }
@@ -37,9 +34,9 @@ public abstract class AbstractStorage implements Storage {
 
     protected abstract int findIndex(String uuid);
 
-    protected abstract Resume getForIndex(int index);
+    protected abstract Resume getByIndex(int index);
 
-    protected abstract void updateForIndex(int index, Resume resume);
+    protected abstract void updateByIndex(int index, Resume resume);
 
-    protected abstract void removeForIndex(int index);
+    protected abstract void removeByIndex(int index);
 }

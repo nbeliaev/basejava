@@ -10,17 +10,17 @@ public class ListStorage extends AbstractStorage {
     private final ArrayList<Resume> STORAGE = new ArrayList<>();
 
     @Override
+    public int size() {
+        return STORAGE.size();
+    }
+
+    @Override
     public void save(Resume resume) {
         int index = findIndex(resume.getUuid());
         if (index >= 0) {
             throw new ExistStorageException(resume.getUuid());
         }
         STORAGE.add(resume);
-    }
-
-    @Override
-    public int size() {
-        return STORAGE.size();
     }
 
     @Override
@@ -44,17 +44,17 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected Resume getForIndex(int index) {
+    protected Resume getByIndex(int index) {
         return STORAGE.get(index);
     }
 
     @Override
-    protected void updateForIndex(int index, Resume resume) {
+    protected void updateByIndex(int index, Resume resume) {
         STORAGE.set(index, resume);
     }
 
     @Override
-    protected void removeForIndex(int index) {
+    protected void removeByIndex(int index) {
         STORAGE.remove(index);
     }
 }

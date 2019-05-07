@@ -1,6 +1,7 @@
 package ru.javawebinar.basejava.storage;
 
-import ru.javawebinar.basejava.exception.*;
+import ru.javawebinar.basejava.exception.ExistStorageException;
+import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
 
 import java.util.Arrays;
@@ -11,19 +12,12 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     protected static final int MAX_CAPACITY = 10_000;
     protected final Resume[] STORAGE = new Resume[MAX_CAPACITY];
 
+    @Override
     public int size() {
         return currentSize;
     }
 
-    public Resume[] getAll() {
-        return Arrays.copyOf(STORAGE, currentSize);
-    }
-
-    public void clear() {
-        Arrays.fill(STORAGE, 0, currentSize, null);
-        currentSize = 0;
-    }
-
+    @Override
     public void save(Resume resume) {
         if (currentSize == MAX_CAPACITY) {
             throw new StorageException("Resume hasn't been added. Maximum storage size reached.", resume.getUuid());
@@ -38,17 +32,28 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected Resume getForIndex(int index) {
+    public void clear() {
+        Arrays.fill(STORAGE, 0, currentSize, null);
+        currentSize = 0;
+    }
+
+    @Override
+    public Resume[] getAll() {
+        return Arrays.copyOf(STORAGE, currentSize);
+    }
+
+    @Override
+    protected Resume getByIndex(int index) {
         return STORAGE[index];
     }
 
     @Override
-    protected void updateForIndex(int index, Resume resume) {
+    protected void updateByIndex(int index, Resume resume) {
         STORAGE[index] = resume;
     }
 
     @Override
-    protected void removeForIndex(int index) {
+    protected void removeByIndex(int index) {
         remove(index);
         STORAGE[currentSize - 1] = null;
         currentSize--;
