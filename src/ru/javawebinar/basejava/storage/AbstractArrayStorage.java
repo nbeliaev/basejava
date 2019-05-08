@@ -1,6 +1,5 @@
 package ru.javawebinar.basejava.storage;
 
-import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
 
@@ -10,7 +9,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
 
     protected int currentSize;
     protected static final int MAX_CAPACITY = 10_000;
-    protected final Resume[] STORAGE = new Resume[MAX_CAPACITY];
+    protected Resume[] storage = new Resume[MAX_CAPACITY];
 
     @Override
     public int size() {
@@ -18,45 +17,41 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    public void save(Resume resume) {
-        if (currentSize == MAX_CAPACITY) {
-            throw new StorageException("Resume hasn't been added. Maximum storage size reached.", resume.getUuid());
-        }
-
-        int index = findIndex(resume.getUuid());
-        if (index >= 0) {
-            throw new ExistStorageException(resume.getUuid());
-        }
-        insert(index, resume);
-        currentSize++;
-    }
-
-    @Override
     public void clear() {
-        Arrays.fill(STORAGE, 0, currentSize, null);
+        Arrays.fill(storage, 0, currentSize, null);
         currentSize = 0;
     }
 
     @Override
     public Resume[] getAll() {
-        return Arrays.copyOf(STORAGE, currentSize);
+        return Arrays.copyOf(storage, currentSize);
     }
 
     @Override
     protected Resume getByIndex(int index) {
-        return STORAGE[index];
+        return storage[index];
     }
 
     @Override
     protected void updateByIndex(int index, Resume resume) {
-        STORAGE[index] = resume;
+        storage[index] = resume;
     }
 
     @Override
     protected void removeByIndex(int index) {
         remove(index);
-        STORAGE[currentSize - 1] = null;
+        storage[currentSize - 1] = null;
         currentSize--;
+    }
+
+    @Override
+    protected void saveByIndex(int index, Resume resume) {
+        if (currentSize < MAX_CAPACITY) {
+            insert(index, resume);
+            currentSize++;
+        } else {
+            throw new StorageException("Resume hasn't been added. Maximum storage size reached.", resume.getUuid());
+        }
     }
 
     protected abstract void remove(int index);
