@@ -28,30 +28,35 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected Resume getByIndex(int index) {
-        return storage[index];
+    protected Resume getByKey(Object index) {
+        return storage[(int) index];
     }
 
     @Override
-    protected void updateByIndex(int index, Resume resume) {
-        storage[index] = resume;
+    protected void updateByKey(Object index, Resume resume) {
+        storage[(int) index] = resume;
     }
 
     @Override
-    protected void removeByIndex(int index) {
-        remove(index);
+    protected void removeByKey(Object index) {
+        remove((int) index);
         storage[currentSize - 1] = null;
         currentSize--;
     }
 
     @Override
-    protected void saveByIndex(int index, Resume resume) {
+    protected void saveByKey(Object index, Resume resume) {
         if (currentSize < MAX_CAPACITY) {
-            insert(index, resume);
+            insert((int) index, resume);
             currentSize++;
         } else {
             throw new StorageException("Resume hasn't been added. Maximum storage size reached.", resume.getUuid());
         }
+    }
+
+    @Override
+    protected boolean isValidKey(Object key) {
+        return (int) key >= 0;
     }
 
     protected abstract void remove(int index);

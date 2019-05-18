@@ -2,9 +2,7 @@ package ru.javawebinar.basejava.storage;
 
 import ru.javawebinar.basejava.model.Resume;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 public class MapStorage extends AbstractStorage {
@@ -27,36 +25,33 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected int findIndex(String uuid) {
-        List<String> keys = new ArrayList<String>(storage.keySet());
-        return keys.indexOf(uuid);
+    protected Object findKey(String uuid) {
+        return uuid;
     }
 
     @Override
-    protected Resume getByIndex(int index) {
-        String key = getKeyByIndex(index);
+    protected boolean isValidKey(Object key) {
+        Resume resume = storage.get(key);
+        return resume != null;
+    }
+
+    @Override
+    protected Resume getByKey(Object key) {
         return storage.get(key);
     }
 
     @Override
-    protected void updateByIndex(int index, Resume resume) {
-        String key = getKeyByIndex(index);
-        storage.replace(key, resume);
+    protected void updateByKey(Object key, Resume resume) {
+        storage.replace((String) key, resume);
     }
 
     @Override
-    protected void removeByIndex(int index) {
-        String key = getKeyByIndex(index);
+    protected void removeByKey(Object key) {
         storage.remove(key);
     }
 
     @Override
-    protected void saveByIndex(int index, Resume resume) {
-        storage.put(resume.getUuid(), resume);
-    }
-
-    private String getKeyByIndex(int index) {
-        List<String> keys = new ArrayList<String>(storage.keySet());
-        return keys.get(index);
+    protected void saveByKey(Object key, Resume resume) {
+        storage.put((String) key, resume);
     }
 }

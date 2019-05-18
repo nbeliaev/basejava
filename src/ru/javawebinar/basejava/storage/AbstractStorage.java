@@ -4,50 +4,53 @@ import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.Resume;
 
-public abstract class AbstractStorage implements Storage {
+public abstract class AbstractStorage<T> implements Storage {
 
     public Resume get(String uuid) {
-        int index = findIndex(uuid);
-        if (index >= 0) {
-            return getByIndex(index);
+        T key = findKey(uuid);
+        if (isValidKey(key)) {
+            return getByKey(key);
         } else {
             throw new NotExistStorageException(uuid);
         }
     }
 
     public void update(Resume resume) {
-        int index = findIndex(resume.getUuid());
-        if (index >= 0) {
-            updateByIndex(index, resume);
+        T key = findKey(resume.getUuid());
+        if (isValidKey(key)) {
+            updateByKey(key, resume);
         } else {
             throw new NotExistStorageException(resume.getUuid());
         }
     }
 
     public void delete(String uuid) {
-        int index = findIndex(uuid);
-        if (index >= 0) {
-            removeByIndex(index);
+        T key = findKey(uuid);
+        if (isValidKey(key)) {
+            removeByKey(key);
         } else {
             throw new NotExistStorageException(uuid);
         }
     }
 
     public void save(Resume resume) {
-        int index = findIndex(resume.getUuid());
-        if (index >= 0) {
+        T key = findKey(resume.getUuid());
+        if (!isValidKey(key)) {
+            saveByKey(key, resume);
+        } else {
             throw new ExistStorageException(resume.getUuid());
         }
-        saveByIndex(index, resume);
     }
 
-    protected abstract int findIndex(String uuid);
+    protected abstract T findKey(String uuid);
 
-    protected abstract Resume getByIndex(int index);
+    protected abstract boolean isValidKey(T key);
 
-    protected abstract void updateByIndex(int index, Resume resume);
+    protected abstract Resume getByKey(T key);
 
-    protected abstract void removeByIndex(int index);
+    protected abstract void updateByKey(T key, Resume resume);
 
-    protected abstract void saveByIndex(int index, Resume resume);
+    protected abstract void removeByKey(T key);
+
+    protected abstract void saveByKey(T key, Resume resume);
 }
