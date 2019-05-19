@@ -25,14 +25,13 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected Object findKey(String uuid) {
+    protected String findKey(String uuid) {
         return uuid;
     }
 
     @Override
     protected boolean isValidKey(Object key) {
-        Resume resume = storage.get(key);
-        return resume != null;
+        return storage.containsKey(key);
     }
 
     @Override
