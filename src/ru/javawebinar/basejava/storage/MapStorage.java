@@ -5,7 +5,7 @@ import ru.javawebinar.basejava.model.Resume;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class MapStorage extends AbstractStorage {
+public class MapStorage extends AbstractStorage<String> {
 
     private Map<String, Resume> storage = new LinkedHashMap<>();
 
@@ -30,27 +30,27 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean isValidKey(Object key) {
+    protected boolean isValidKey(String key) {
         return storage.containsKey(key);
     }
 
     @Override
-    protected Resume getByKey(Object key) {
+    protected Resume getByKey(String key) {
         return storage.get(key);
     }
 
     @Override
-    protected void updateByKey(Object key, Resume resume) {
-        storage.replace((String) key, resume);
+    protected void updateByKey(String key, Resume resume) {
+        storage.replace(key, resume);
     }
 
     @Override
-    protected void removeByKey(Object key) {
+    protected void removeByKey(String key) {
         storage.remove(key);
     }
 
     @Override
-    protected void saveByKey(Object key, Resume resume) {
-        storage.put((String) key, resume);
+    protected void saveByKey(String key, Resume resume) {
+        storage.put(key, resume);
     }
 }

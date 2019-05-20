@@ -5,7 +5,7 @@ import ru.javawebinar.basejava.model.Resume;
 
 import java.util.Arrays;
 
-public abstract class AbstractArrayStorage extends AbstractStorage {
+public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
 
     protected int currentSize;
     protected static final int MAX_CAPACITY = 10_000;
@@ -28,26 +28,26 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected Resume getByKey(Object index) {
-        return storage[(int) index];
+    protected Resume getByKey(Integer index) {
+        return storage[index];
     }
 
     @Override
-    protected void updateByKey(Object index, Resume resume) {
-        storage[(int) index] = resume;
+    protected void updateByKey(Integer index, Resume resume) {
+        storage[index] = resume;
     }
 
     @Override
-    protected void removeByKey(Object index) {
-        remove((int) index);
+    protected void removeByKey(Integer index) {
+        remove(index);
         storage[currentSize - 1] = null;
         currentSize--;
     }
 
     @Override
-    protected void saveByKey(Object index, Resume resume) {
+    protected void saveByKey(Integer index, Resume resume) {
         if (currentSize < MAX_CAPACITY) {
-            insert((int) index, resume);
+            insert(index, resume);
             currentSize++;
         } else {
             throw new StorageException("Resume hasn't been added. Maximum storage size reached.", resume.getUuid());
@@ -55,8 +55,8 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean isValidKey(Object key) {
-        return (int) key >= 0;
+    protected boolean isValidKey(Integer key) {
+        return key >= 0;
     }
 
     protected abstract void remove(int index);
