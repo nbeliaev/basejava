@@ -2,8 +2,7 @@ package ru.javawebinar.basejava.storage;
 
 import ru.javawebinar.basejava.model.Resume;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 public class MapStorage extends AbstractStorage<String> {
 
@@ -20,8 +19,10 @@ public class MapStorage extends AbstractStorage<String> {
     }
 
     @Override
-    public Resume[] getAll() {
-        return storage.values().toArray(new Resume[storage.size()]);
+    public List<Resume> getAllSorted() {
+        ArrayList<Resume> resumes = new ArrayList<>(storage.values());
+        Collections.sort(resumes);
+        return resumes;
     }
 
     @Override
