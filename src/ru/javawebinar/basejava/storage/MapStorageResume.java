@@ -6,7 +6,7 @@ import java.util.*;
 
 public class MapStorageResume extends AbstractStorage<Resume> {
 
-    private Map<String, Resume> storage = new LinkedHashMap<>();
+    private Map<String, Resume> storage = new HashMap<>();
 
     @Override
     public int size() {
@@ -31,8 +31,8 @@ public class MapStorageResume extends AbstractStorage<Resume> {
     }
 
     @Override
-    protected boolean isValidKey(Resume key) {
-        return key == null;
+    protected boolean isExistKey(Resume key) {
+        return key != null;
     }
 
     @Override

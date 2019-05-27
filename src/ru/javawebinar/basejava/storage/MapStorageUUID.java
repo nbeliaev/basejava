@@ -31,7 +31,7 @@ public class MapStorageUUID extends AbstractStorage<String> {
     }
 
     @Override
-    protected boolean isValidKey(String key) {
+    protected boolean isExistKey(String key) {
         return storage.containsKey(key);
     }
 

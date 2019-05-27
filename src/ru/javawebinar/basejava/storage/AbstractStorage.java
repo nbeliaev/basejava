@@ -8,7 +8,7 @@ public abstract class AbstractStorage<T> implements Storage {
 
     public Resume get(String uuid) {
         T key = findKey(uuid);
-        if (isValidKey(key)) {
+        if (isExistKey(key)) {
             return getByKey(key);
         } else {
             throw new NotExistStorageException(uuid);
@@ -17,7 +17,7 @@ public abstract class AbstractStorage<T> implements Storage {
 
     public void update(Resume resume) {
         T key = findKey(resume.getUuid());
-        if (isValidKey(key)) {
+        if (isExistKey(key)) {
             updateByKey(key, resume);
         } else {
             throw new NotExistStorageException(resume.getUuid());
@@ -26,7 +26,7 @@ public abstract class AbstractStorage<T> implements Storage {
 
     public void delete(String uuid) {
         T key = findKey(uuid);
-        if (isValidKey(key)) {
+        if (isExistKey(key)) {
             removeByKey(key);
         } else {
             throw new NotExistStorageException(uuid);
@@ -35,7 +35,7 @@ public abstract class AbstractStorage<T> implements Storage {
 
     public void save(Resume resume) {
         T key = findKey(resume.getUuid());
-        if (!isValidKey(key)) {
+        if (!isExistKey(key)) {
             saveByKey(key, resume);
         } else {
             throw new ExistStorageException(resume.getUuid());
@@ -44,7 +44,7 @@ public abstract class AbstractStorage<T> implements Storage {
 
     protected abstract T findKey(String uuid);
 
-    protected abstract boolean isValidKey(T key);
+    protected abstract boolean isExistKey(T key);
 
     protected abstract Resume getByKey(T key);
 
