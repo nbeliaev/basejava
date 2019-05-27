@@ -19,10 +19,8 @@ public class MapStorageUUID extends AbstractStorage<String> {
     }
 
     @Override
-    public List<Resume> getAllSorted() {
-        ArrayList<Resume> resumes = new ArrayList<>(storage.values());
-        Collections.sort(resumes);
-        return resumes;
+    protected List<Resume> storageAsList() {
+        return new ArrayList<>(storage.values());
     }
 
     @Override
@@ -54,4 +52,5 @@ public class MapStorageUUID extends AbstractStorage<String> {
     protected void saveByKey(String key, Resume resume) {
         storage.put(key, resume);
     }
+
 }

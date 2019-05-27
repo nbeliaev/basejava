@@ -2,7 +2,10 @@ package ru.javawebinar.basejava.storage;
 
 import ru.javawebinar.basejava.model.Resume;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MapStorageResume extends AbstractStorage<Resume> {
 
@@ -19,10 +22,8 @@ public class MapStorageResume extends AbstractStorage<Resume> {
     }
 
     @Override
-    public List<Resume> getAllSorted() {
-        ArrayList<Resume> resumes = new ArrayList<>(storage.values());
-        Collections.sort(resumes);
-        return resumes;
+    protected List<Resume> storageAsList() {
+        return new ArrayList<>(storage.values());
     }
 
     @Override
@@ -54,4 +55,5 @@ public class MapStorageResume extends AbstractStorage<Resume> {
     protected void saveByKey(Resume key, Resume resume) {
         storage.put(key.getUuid(), resume);
     }
+
 }

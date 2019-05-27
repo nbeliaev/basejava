@@ -24,10 +24,8 @@ public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     }
 
     @Override
-    public List<Resume> getAllSorted() {
-        Resume[] resumes = Arrays.copyOf(storage, currentSize);
-        Arrays.sort(resumes);
-        return Arrays.asList(resumes);
+    protected List<Resume> storageAsList() {
+        return Arrays.asList(Arrays.copyOf(storage, currentSize));
     }
 
     @Override
