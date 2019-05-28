@@ -53,7 +53,7 @@ public class MapStorageResume extends AbstractStorage<Resume> {
 
     @Override
     protected void saveByKey(Resume key, Resume resume) {
-        storage.put(key.getUuid(), resume);
+        storage.put(resume.getUuid(), resume);
     }
 
 }
