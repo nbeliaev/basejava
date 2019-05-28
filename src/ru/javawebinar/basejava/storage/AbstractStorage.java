@@ -9,27 +9,32 @@ import java.util.List;
 
 public abstract class AbstractStorage<T> implements Storage {
 
+    @Override
     public Resume get(String uuid) {
         T key = getExistKey(uuid);
         return getByKey(key);
     }
 
+    @Override
     public void update(Resume resume) {
         T key = getExistKey(resume.getUuid());
         updateByKey(key, resume);
 
     }
 
+    @Override
     public void delete(String uuid) {
         T key = getExistKey(uuid);
         removeByKey(key);
     }
 
+    @Override
     public void save(Resume resume) {
         T key = getNotExistKey(resume.getUuid());
         saveByKey(key, resume);
     }
 
+    @Override
     public List<Resume> getAllSorted() {
         List<Resume> resumes = copyStorage();
         Collections.sort(resumes);
