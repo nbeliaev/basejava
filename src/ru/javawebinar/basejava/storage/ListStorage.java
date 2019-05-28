@@ -20,8 +20,8 @@ public class ListStorage extends AbstractStorage<Integer> {
     }
 
     @Override
-    protected List<Resume> storageAsList() {
-        return storage;
+    protected List<Resume> copyStorage() {
+        return new ArrayList<>(storage);
     }
 
     @Override
