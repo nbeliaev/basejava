@@ -1,22 +1,21 @@
 package ru.javawebinar.basejava.model;
 
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
-/**
- * Initial resume class
- */
 public class Resume implements Comparable<Resume> {
 
-    // Unique identifier
     private final String uuid;
     private String fullName;
+    private Map<ContactType, String> contacts = new EnumMap<>(ContactType.class);
+    private Map<SectionType, AbstractSection> sections = new EnumMap<>(SectionType.class);
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
     }
 
     public Resume(String uuid, String fullName) {
+        Objects.requireNonNull(uuid, "uuid is required");
+        Objects.requireNonNull(fullName, "fullName is required");
         this.uuid = uuid;
         this.fullName = fullName;
     }
@@ -33,9 +32,30 @@ public class Resume implements Comparable<Resume> {
         this.fullName = fullName;
     }
 
+    public void addContact(ContactType type, String content) {
+        contacts.put(type, content);
+    }
+
+    public void addSection(SectionType type, AbstractSection section) {
+        sections.put(type, section);
+    }
+
+    public String getContact(ContactType type) {
+        return contacts.get(type);
+    }
+
+    public AbstractSection getSection(SectionType type) {
+        return sections.get(type);
+    }
+
     @Override
     public String toString() {
-        return uuid + '[' + fullName + ']';
+        return "Resume{" +
+                "uuid='" + uuid + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", contacts=" + contacts +
+                ", sections=" + sections +
+                '}';
     }
 
     @Override
