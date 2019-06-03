@@ -73,6 +73,20 @@ public class ResumeTestData {
                 DateUtil.of(2011, 3),
                 DateUtil.of(2011, 4),
                 "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\""));
+
+        Organization organization = new Organization(
+                "Санкт-Петербургский национальный исследовательский университет",
+                "http://www.ifmo.ru/");
+        organization.addPosition(
+                DateUtil.of(1993, 9),
+                DateUtil.of(1996, 7),
+                "Аспирантура (программист С, С++)");
+        organization.addPosition(
+                DateUtil.of(1987, 9),
+                DateUtil.of(1993, 7),
+                "Инженер (программист Fortran, C)");
+        education.add(organization);
+
         section = new OrganizationSection(education);
         resume.addSection(SectionType.EDUCATION, section);
 
