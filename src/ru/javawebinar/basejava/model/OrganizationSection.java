@@ -2,9 +2,9 @@ package ru.javawebinar.basejava.model;
 
 import java.util.List;
 
-class PeriodicDataListSection extends AbstractSection<List<PeriodicData>> {
+public class OrganizationSection extends AbstractSection<List<Organization>> {
 
-    PeriodicDataListSection(List<PeriodicData> content) {
+    public OrganizationSection(List<Organization> content) {
         super(content);
     }
 

@@ -2,7 +2,7 @@ package ru.javawebinar.basejava.model;
 
 import java.util.Objects;
 
-abstract class AbstractSection<T> {
+public abstract class AbstractSection<T> {
 
     private T content;
 

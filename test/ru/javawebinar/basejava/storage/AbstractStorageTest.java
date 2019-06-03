@@ -5,7 +5,7 @@ import org.junit.Test;
 import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.Resume;
-import ru.javawebinar.basejava.model.ResumeTestData;
+import ru.javawebinar.basejava.ResumeTestData;
 
 import java.util.Arrays;
 
@@ -17,9 +17,9 @@ public abstract class AbstractStorageTest {
     private final static String UUID_1 = "uuid1";
     private final static String UUID_2 = "uuid2";
     private final static String UUID_3 = "uuid3";
-    private final static Resume RESUME_1 = new ResumeTestData(UUID_1, "name1").getResume();
-    private final static Resume RESUME_2 = new ResumeTestData(UUID_2, "name2").getResume();
-    private final static Resume RESUME_3 = new ResumeTestData(UUID_3, "name3").getResume();
+    private final static Resume RESUME_1 = ResumeTestData.getResume(UUID_1, "name1");
+    private final static Resume RESUME_2 = ResumeTestData.getResume(UUID_2, "name2");
+    private final static Resume RESUME_3 = ResumeTestData.getResume(UUID_3, "name3");
 
     protected AbstractStorageTest(Storage storage) {
         this.storage = storage;

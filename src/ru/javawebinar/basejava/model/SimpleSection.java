@@ -1,8 +1,8 @@
 package ru.javawebinar.basejava.model;
 
-class SimpleSection extends AbstractSection<String> {
+public class SimpleSection extends AbstractSection<String> {
 
-    SimpleSection(String content) {
+    public SimpleSection(String content) {
         super(content);
     }
 

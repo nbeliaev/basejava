@@ -1,4 +1,6 @@
-package ru.javawebinar.basejava.model;
+package ru.javawebinar.basejava;
+
+import ru.javawebinar.basejava.model.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -6,16 +8,13 @@ import java.util.List;
 
 public class ResumeTestData {
 
-    private Resume resume;
-
     public static void main(String[] args) {
-        ResumeTestData resumeTestData = new ResumeTestData("dummy", "dummy");
-        Resume resume = resumeTestData.getResume();
-        System.out.println(resume);
+        System.out.println(ResumeTestData.getResume("dummy", "dummy"));
     }
 
-    public ResumeTestData(String uuid, String name) {
-        resume = new Resume(uuid, name);
+    public static Resume getResume(String uuid, String name) {
+
+        Resume resume = new Resume(uuid, name);
         resume.setFullName("Григорий Кислин");
         resume.addContact(ContactType.MOBILE_PHONE, "+7(921) 855-0482");
         resume.addContact(ContactType.SKYPE, "grigory.kislin");
@@ -45,41 +44,38 @@ public class ResumeTestData {
         section = new ListSection(qualifications);
         resume.addSection(SectionType.QUALIFICATIONS, section);
 
-        List<PeriodicData> experience = new ArrayList<>();
-        experience.add(new PeriodicData(
+        List<Organization> experience = new ArrayList<>();
+        experience.add(new Organization(
                 "Java Online Projects",
                 "http://javaops.ru/",
-                LocalDate.of(2013, 10, 01),
+                LocalDate.of(2013, 10, 1),
                 "Автор проекта.\n" +
                         "Создание, организация и проведение Java онлайн проектов и стажировок"));
-        experience.add(new PeriodicData(
+        experience.add(new Organization(
                 "Wrike",
-                LocalDate.of(2014, 10, 01),
+                LocalDate.of(2014, 10, 1),
                 LocalDate.of(2016, 1, 1),
                 "Старший разработчик (backend)\n" +
                         "Проектирование и разработка онлайн платформы управления проектами Wrike"));
-        section = new PeriodicDataListSection(experience);
+        section = new OrganizationSection(experience);
         resume.addSection(SectionType.EXPERIENCE, section);
 
-        List<PeriodicData> education = new ArrayList<>();
-        education.add(new PeriodicData(
+        List<Organization> education = new ArrayList<>();
+        education.add(new Organization(
                 "Coursera",
                 "https://www.coursera.org/course/progfun",
-                LocalDate.of(2013, 03, 01),
-                LocalDate.of(2013, 05, 01),
+                LocalDate.of(2013, 3, 1),
+                LocalDate.of(2013, 5, 1),
                 "\"Functional Programming Principles in Scala\" by Martin Odersky"));
-        education.add(new PeriodicData(
+        education.add(new Organization(
                 "Luxoft",
                 "http://www.luxoft-training.ru/training/catalog/course.html?ID=22366",
-                LocalDate.of(2011, 03, 01),
-                LocalDate.of(2011, 04, 1),
+                LocalDate.of(2011, 3, 1),
+                LocalDate.of(2011, 4, 1),
                 "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\""));
-        section = new PeriodicDataListSection(education);
+        section = new OrganizationSection(education);
         resume.addSection(SectionType.EDUCATION, section);
 
-    }
-
-    public Resume getResume() {
         return resume;
     }
 
