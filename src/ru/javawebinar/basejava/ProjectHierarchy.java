@@ -13,7 +13,7 @@ public class ProjectHierarchy {
         if (parentDirectory.isDirectory()) {
             final File[] files = parentDirectory.listFiles();
             if (files != null) {
-                for (File file: files) {
+                for (File file : files) {
                     System.out.println(separator + file.getName());
                     if (file.isDirectory()) {
                         print(file, separator + "\t");
