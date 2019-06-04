@@ -82,6 +82,18 @@ public class Organization {
             this.description = description;
         }
 
+        public LocalDate getBeginDate() {
+            return beginDate;
+        }
+
+        public LocalDate getEndDate() {
+            return endDate;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
         @Override
         public String toString() {
             return "Position{" +
