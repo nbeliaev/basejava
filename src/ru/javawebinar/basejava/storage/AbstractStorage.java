@@ -12,26 +12,26 @@ public abstract class AbstractStorage<T> implements Storage {
     @Override
     public Resume get(String uuid) {
         T key = getExistKey(uuid);
-        return getByKey(key);
+        return doGet(key);
     }
 
     @Override
     public void update(Resume resume) {
         T key = getExistKey(resume.getUuid());
-        updateByKey(key, resume);
+        doUpdate(key, resume);
 
     }
 
     @Override
     public void delete(String uuid) {
         T key = getExistKey(uuid);
-        removeByKey(key);
+        doDelete(key);
     }
 
     @Override
     public void save(Resume resume) {
         T key = getNotExistKey(resume.getUuid());
-        saveByKey(key, resume);
+        doSave(key, resume);
     }
 
     @Override
@@ -61,13 +61,13 @@ public abstract class AbstractStorage<T> implements Storage {
 
     protected abstract boolean isExistKey(T key);
 
-    protected abstract Resume getByKey(T key);
+    protected abstract Resume doGet(T key);
 
-    protected abstract void updateByKey(T key, Resume resume);
+    protected abstract void doUpdate(T key, Resume resume);
 
-    protected abstract void removeByKey(T key);
+    protected abstract void doDelete(T key);
 
-    protected abstract void saveByKey(T key, Resume resume);
+    protected abstract void doSave(T key, Resume resume);
 
     protected abstract List<Resume> copyStorage();
 }

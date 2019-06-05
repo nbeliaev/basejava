@@ -40,22 +40,22 @@ public class ListStorage extends AbstractStorage<Integer> {
     }
 
     @Override
-    protected Resume getByKey(Integer key) {
+    protected Resume doGet(Integer key) {
         return storage.get(key);
     }
 
     @Override
-    protected void updateByKey(Integer key, Resume resume) {
+    protected void doUpdate(Integer key, Resume resume) {
         storage.set(key, resume);
     }
 
     @Override
-    protected void removeByKey(Integer key) {
+    protected void doDelete(Integer key) {
         storage.remove((int) key);
     }
 
     @Override
-    protected void saveByKey(Integer key, Resume resume) {
+    protected void doSave(Integer key, Resume resume) {
         storage.add(resume);
     }
 

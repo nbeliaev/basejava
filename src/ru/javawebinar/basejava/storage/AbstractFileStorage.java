@@ -35,7 +35,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     }
 
     @Override
-    protected Resume getByKey(File file) {
+    protected Resume doGet(File file) {
         try {
             return readResume(file);
 
@@ -45,7 +45,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     }
 
     @Override
-    protected void updateByKey(File file, Resume resume) {
+    protected void doUpdate(File file, Resume resume) {
         try {
             writeResume(file, resume);
         } catch (IOException e) {
@@ -54,12 +54,12 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     }
 
     @Override
-    protected void removeByKey(File file) {
+    protected void doDelete(File file) {
         file.delete();
     }
 
     @Override
-    protected void saveByKey(File file, Resume resume) {
+    protected void doSave(File file, Resume resume) {
         try {
             file.createNewFile();
             writeResume(file, resume);

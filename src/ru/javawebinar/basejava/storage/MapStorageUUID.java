@@ -34,22 +34,22 @@ public class MapStorageUUID extends AbstractStorage<String> {
     }
 
     @Override
-    protected Resume getByKey(String key) {
+    protected Resume doGet(String key) {
         return storage.get(key);
     }
 
     @Override
-    protected void updateByKey(String key, Resume resume) {
+    protected void doUpdate(String key, Resume resume) {
         storage.replace(key, resume);
     }
 
     @Override
-    protected void removeByKey(String key) {
+    protected void doDelete(String key) {
         storage.remove(key);
     }
 
     @Override
-    protected void saveByKey(String key, Resume resume) {
+    protected void doSave(String key, Resume resume) {
         storage.put(key, resume);
     }
 

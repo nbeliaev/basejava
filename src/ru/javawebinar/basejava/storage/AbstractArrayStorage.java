@@ -29,24 +29,24 @@ public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     }
 
     @Override
-    protected Resume getByKey(Integer index) {
+    protected Resume doGet(Integer index) {
         return storage[index];
     }
 
     @Override
-    protected void updateByKey(Integer index, Resume resume) {
+    protected void doUpdate(Integer index, Resume resume) {
         storage[index] = resume;
     }
 
     @Override
-    protected void removeByKey(Integer index) {
+    protected void doDelete(Integer index) {
         remove(index);
         storage[currentSize - 1] = null;
         currentSize--;
     }
 
     @Override
-    protected void saveByKey(Integer index, Resume resume) {
+    protected void doSave(Integer index, Resume resume) {
         if (currentSize < MAX_CAPACITY) {
             insert(index, resume);
             currentSize++;
