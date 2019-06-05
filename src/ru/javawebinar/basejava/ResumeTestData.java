@@ -44,37 +44,47 @@ public class ResumeTestData {
         section = new ListSection(qualifications);
         resume.addSection(SectionType.QUALIFICATIONS, section);
 
+
         List<Organization> experience = new ArrayList<>();
-        experience.add(new Organization(
-                "Java Online Projects",
-                "http://javaops.ru/",
+        Organization organization;
+        organization = new Organization("Java Online Projects", "http://javaops.ru/");
+        organization.addPosition(
                 DateUtil.of(2013, 10),
                 "Автор проекта.\n" +
-                        "Создание, организация и проведение Java онлайн проектов и стажировок"));
-        experience.add(new Organization(
-                "Wrike",
+                        " Создание, организация и проведение Java онлайн проектов и стажировок");
+        experience.add(organization);
+
+        organization = new Organization("Wrike");
+        organization.addPosition(
                 DateUtil.of(2014, 10),
                 DateUtil.of(2016, 1),
                 "Старший разработчик (backend)\n" +
-                        "Проектирование и разработка онлайн платформы управления проектами Wrike"));
+                        "Проектирование и разработка онлайн платформы управления проектами Wrike");
+        experience.add(organization);
+
         section = new OrganizationSection(experience);
         resume.addSection(SectionType.EXPERIENCE, section);
 
         List<Organization> education = new ArrayList<>();
-        education.add(new Organization(
+        organization = new Organization(
                 "Coursera",
-                "https://www.coursera.org/course/progfun",
+                "https://www.coursera.org/course/progfun");
+        organization.addPosition(
                 DateUtil.of(2013, 3),
                 DateUtil.of(2013, 5),
-                "\"Functional Programming Principles in Scala\" by Martin Odersky"));
-        education.add(new Organization(
+                "\"Functional Programming Principles in Scala\" by Martin Odersky");
+        education.add(organization);
+
+        organization = new Organization(
                 "Luxoft",
-                "http://www.luxoft-training.ru/training/catalog/course.html?ID=22366",
+                "http://www.luxoft-training.ru/training/catalog/course.html?ID=22366");
+        organization.addPosition(
                 DateUtil.of(2011, 3),
                 DateUtil.of(2011, 4),
-                "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\""));
+                "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"");
+        education.add(organization);
 
-        Organization organization = new Organization(
+        organization = new Organization(
                 "Санкт-Петербургский национальный исследовательский университет",
                 "http://www.ifmo.ru/");
         organization.addPosition(

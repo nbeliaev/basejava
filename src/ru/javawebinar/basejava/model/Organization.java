@@ -10,44 +10,12 @@ public class Organization {
     private Link link;
     private List<Position> positions = new ArrayList<>();
 
-    public Organization(String name, String url, LocalDate beginDate, LocalDate endDate, String description) {
-        this(new Link(name, url), beginDate, endDate, description);
-    }
-
-    public Organization(String name, LocalDate beginDate, LocalDate endDate, String description) {
-        this(new Link(name), beginDate, endDate, description);
-    }
-
-    public Organization(String name, String url, LocalDate beginDate, String description) {
-        this(new Link(name, url), beginDate, description);
-    }
-
-    public Organization(String name, LocalDate beginDate, String description) {
-        this(new Link(name), beginDate, description);
-    }
-
     public Organization(String name, String url) {
-        this(new Link(name, url));
+        this.link = new Link(name, url);
     }
 
-    private Organization(Link link, LocalDate beginDate, LocalDate endDate, String description) {
-        Objects.requireNonNull(link, "name is required");
-        Objects.requireNonNull(beginDate, "beginDate is required");
-        Objects.requireNonNull(endDate, "endDate is required");
-        this.link = link;
-        addPosition(beginDate, endDate, description);
-    }
-
-    private Organization(Link link, LocalDate beginDate, String description) {
-        Objects.requireNonNull(link, "name is required");
-        Objects.requireNonNull(beginDate, "beginDate is required");
-        this.link = link;
-        addPosition(beginDate, description);
-    }
-
-    private Organization(Link link) {
-        Objects.requireNonNull(link, "name is required");
-        this.link = link;
+    public Organization(String name) {
+        this.link = new Link(name);
     }
 
     public void addPosition(LocalDate beginDate, LocalDate endDate, String description) {
