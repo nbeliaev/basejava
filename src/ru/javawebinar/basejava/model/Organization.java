@@ -1,42 +1,38 @@
 package ru.javawebinar.basejava.model;
 
+import ru.javawebinar.basejava.util.DateUtil;
+
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 public class Organization {
 
     private Link link;
-    private List<Position> positions = new ArrayList<>();
+    private List<Position> positions;
 
-    public Organization(String name, String url) {
+    public Organization(String name, String url, Position... positions) {
         this.link = new Link(name, url);
+        this.positions = Arrays.asList(positions);
     }
 
-    public Organization(String name) {
+    public Organization(String name, Position... positions) {
         this.link = new Link(name);
-    }
-
-    public void addPosition(LocalDate beginDate, LocalDate endDate, String description) {
-        positions.add(new Position(beginDate, endDate, description));
-    }
-
-    public void addPosition(LocalDate beginDate, String description) {
-        positions.add(new Position(beginDate, description));
+        this.positions = Arrays.asList(positions);
     }
 
     public List<Position> getPositions() {
         return positions;
     }
 
-    private class Position {
+    public static class Position {
 
         private LocalDate beginDate;
         private LocalDate endDate;
         private String description;
 
-        Position(LocalDate beginDate, LocalDate endDate, String description) {
+        public Position(LocalDate beginDate, LocalDate endDate, String description) {
             Objects.requireNonNull(beginDate, "beginDate is required");
             Objects.requireNonNull(endDate, "endDate is required");
             this.beginDate = beginDate;
@@ -44,9 +40,10 @@ public class Organization {
             this.description = description;
         }
 
-        Position(LocalDate beginDate, String description) {
+        public Position(LocalDate beginDate, String description) {
             Objects.requireNonNull(beginDate, "beginDate is required");
             this.beginDate = beginDate;
+            this.endDate = DateUtil.NOW;
             this.description = description;
         }
 

@@ -30,36 +30,34 @@ public class ResumeTestData {
         section = new SimpleSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям");
         resume.addSection(SectionType.OBJECTIVE, section);
 
-        List<String> achievement = new ArrayList<>();
-        achievement.add("С 2013 года: разработка проектов \"Разработка Web приложения\"");
-        achievement.add("Реализация двухфакторной аутентификации для онлайн платформы управления проектами Wrike.");
-        achievement.add("Налаживание процесса разработки и непрерывной интеграции ERP системы River BPM.");
-        section = new ListSection(achievement);
+        section = new ListSection(
+                "С 2013 года: разработка проектов \"Разработка Web приложения\"",
+                "Реализация двухфакторной аутентификации для онлайн платформы управления проектами Wrike.",
+                "Налаживание процесса разработки и непрерывной интеграции ERP системы River BPM.");
         resume.addSection(SectionType.ACHIEVEMENT, section);
 
-        List<String> qualifications = new ArrayList<>();
-        qualifications.add("JEE AS: GlassFish (v2.1, v3), OC4J, JBoss, Tomcat, Jetty, WebLogic, WSO2");
-        qualifications.add("Version control: Subversion, Git, Mercury, ClearCase, Perforce");
-        qualifications.add("DB: PostgreSQL(наследование, pgplsql, PL/Python), Redis (Jedis), H2, Oracle");
-        section = new ListSection(qualifications);
+        section = new ListSection(
+                "JEE AS: GlassFish (v2.1, v3), OC4J, JBoss, Tomcat, Jetty, WebLogic, WSO2",
+                "Version control: Subversion, Git, Mercury, ClearCase, Perforce",
+                "DB: PostgreSQL(наследование, pgplsql, PL/Python), Redis (Jedis), H2, Oracle");
         resume.addSection(SectionType.QUALIFICATIONS, section);
-
 
         List<Organization> experience = new ArrayList<>();
         Organization organization;
-        organization = new Organization("Java Online Projects", "http://javaops.ru/");
-        organization.addPosition(
-                DateUtil.of(2013, 10),
-                "Автор проекта.\n" +
-                        " Создание, организация и проведение Java онлайн проектов и стажировок");
+        organization = new Organization(
+                "Java Online Projects",
+                "http://javaops.ru/",
+                new Organization.Position(
+                        DateUtil.of(2013, 10),
+                        "Создание, организация и проведение Java онлайн проектов и стажировок"));
         experience.add(organization);
 
-        organization = new Organization("Wrike");
-        organization.addPosition(
-                DateUtil.of(2014, 10),
-                DateUtil.of(2016, 1),
-                "Старший разработчик (backend)\n" +
-                        "Проектирование и разработка онлайн платформы управления проектами Wrike");
+        organization = new Organization(
+                "Wrike",
+                new Organization.Position(
+                        DateUtil.of(2014, 10),
+                        DateUtil.of(2016, 1),
+                        "Проектирование и разработка онлайн платформы управления проектами Wrike"));
         experience.add(organization);
 
         section = new OrganizationSection(experience);
@@ -68,33 +66,33 @@ public class ResumeTestData {
         List<Organization> education = new ArrayList<>();
         organization = new Organization(
                 "Coursera",
-                "https://www.coursera.org/course/progfun");
-        organization.addPosition(
-                DateUtil.of(2013, 3),
-                DateUtil.of(2013, 5),
-                "\"Functional Programming Principles in Scala\" by Martin Odersky");
+                "https://www.coursera.org/course/progfun",
+                new Organization.Position(
+                        DateUtil.of(2013, 3),
+                        DateUtil.of(2013, 5),
+                        "Functional Programming Principles in Scala by Martin Odersky"));
         education.add(organization);
 
         organization = new Organization(
                 "Luxoft",
-                "http://www.luxoft-training.ru/training/catalog/course.html?ID=22366");
-        organization.addPosition(
-                DateUtil.of(2011, 3),
-                DateUtil.of(2011, 4),
-                "Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"");
+                "http://www.luxoft-training.ru/training/catalog/course.html?ID=22366",
+                new Organization.Position(
+                        DateUtil.of(2011, 3),
+                        DateUtil.of(2011, 4),
+                        "Курс Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML."));
         education.add(organization);
 
         organization = new Organization(
                 "Санкт-Петербургский национальный исследовательский университет",
-                "http://www.ifmo.ru/");
-        organization.addPosition(
-                DateUtil.of(1993, 9),
-                DateUtil.of(1996, 7),
-                "Аспирантура (программист С, С++)");
-        organization.addPosition(
-                DateUtil.of(1987, 9),
-                DateUtil.of(1993, 7),
-                "Инженер (программист Fortran, C)");
+                "http://www.ifmo.ru/",
+                new Organization.Position(
+                        DateUtil.of(1993, 9),
+                        DateUtil.of(1996, 7),
+                        "Аспирантура (программист С, С++)"),
+                new Organization.Position(
+                        DateUtil.of(1987, 9),
+                        DateUtil.of(1993, 7),
+                        "Инженер (программист Fortran, C)"));
         education.add(organization);
 
         section = new OrganizationSection(education);
