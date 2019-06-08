@@ -2,12 +2,13 @@ package ru.javawebinar.basejava.model;
 
 import ru.javawebinar.basejava.util.DateUtil;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class Organization {
+public class Organization implements Serializable {
 
     private Link link;
     private List<Position> positions;
@@ -26,7 +27,7 @@ public class Organization {
         return positions;
     }
 
-    public static class Position {
+    public static class Position implements Serializable {
 
         private LocalDate beginDate;
         private LocalDate endDate;
