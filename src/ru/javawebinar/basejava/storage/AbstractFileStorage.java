@@ -3,8 +3,7 @@ package ru.javawebinar.basejava.storage;
 import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -37,34 +36,39 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     protected Resume doGet(File file) {
         try {
-            return readResume(file);
+            return doRead(new BufferedInputStream(new FileInputStream(file)));
 
         } catch (IOException e) {
-            throw new StorageException("can not read the resume", file.getName(), e);
+            throw new StorageException("Couldn't read the resume", file.getName(), e);
         }
     }
 
     @Override
     protected void doUpdate(File file, Resume resume) {
         try {
-            writeResume(file, resume);
+            doWrite(new BufferedOutputStream(new FileOutputStream(file)), resume);
         } catch (IOException e) {
-            throw new StorageException("can not update the resume", file.getName(), e);
+            throw new StorageException("Couldn't update the resume", file.getName(), e);
         }
     }
 
     @Override
     protected void doDelete(File file) {
-        file.delete();
+        if (!file.delete()) {
+            throw new StorageException("Couldn't delete the file", file.getName());
+        }
     }
 
     @Override
     protected void doSave(File file, Resume resume) {
         try {
-            file.createNewFile();
-            writeResume(file, resume);
+            if (file.createNewFile()) {
+                doWrite(new BufferedOutputStream(new FileOutputStream(file)), resume);
+            } else {
+                throw new StorageException("Couldn't save the file", file.getName());
+            }
         } catch (IOException e) {
-            throw new StorageException("can not create the new resume", file.getName(), e);
+            throw new StorageException("Couldn't create the new resume.", file.getName(), e);
         }
     }
 
@@ -75,9 +79,9 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         if (files != null) {
             for (File file : files) {
                 try {
-                    resumes.add(readResume(file));
+                    resumes.add(doRead(new BufferedInputStream(new FileInputStream(file))));
                 } catch (IOException e) {
-                    throw new StorageException("can not read the resume", file.getName(), e);
+                    throw new StorageException("Couldn't read the resume.", file.getName(), e);
                 }
             }
         }
@@ -94,12 +98,12 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         final File[] files = directory.listFiles();
         if (files != null) {
             for (File file : files) {
-                file.delete();
+                doDelete(file);
             }
         }
     }
 
-    protected abstract void writeResume(File file, Resume resume) throws IOException;
+    protected abstract void doWrite(OutputStream outputStream, Resume resume) throws IOException;
 
-    protected abstract Resume readResume(File file) throws IOException;
+    protected abstract Resume doRead(InputStream inputStream) throws IOException;
 }
