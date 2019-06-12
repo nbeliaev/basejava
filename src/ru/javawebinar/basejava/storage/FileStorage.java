@@ -8,11 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class AbstractFileStorage extends AbstractStorage<File> {
+public class FileStorage extends AbstractStorage<File> {
 
     private final File directory;
+    private final SerializationStrategy serialization;
 
-    public AbstractFileStorage(File directory) {
+    public FileStorage(File directory, SerializationStrategy serialization) {
+        Objects.requireNonNull(serialization, "serialization is required");
         Objects.requireNonNull(directory, "directory is required");
         if (!directory.isDirectory()) {
             throw new IllegalArgumentException(directory.getName() + " is not directory.");
@@ -21,6 +23,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
             throw new StorageException("directory is not available for RW operations.", directory.getName());
         }
         this.directory = directory;
+        this.serialization = serialization;
     }
 
     @Override
@@ -36,8 +39,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     protected Resume doGet(File file) {
         try {
-            return doRead(new BufferedInputStream(new FileInputStream(file)));
-
+            return serialization.doRead(new BufferedInputStream(new FileInputStream(file)));
         } catch (IOException e) {
             throw new StorageException("Couldn't read the resume", file.getName(), e);
         }
@@ -46,7 +48,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     protected void doUpdate(File file, Resume resume) {
         try {
-            doWrite(new BufferedOutputStream(new FileOutputStream(file)), resume);
+            serialization.doWrite(new BufferedOutputStream(new FileOutputStream(file)), resume);
         } catch (IOException e) {
             throw new StorageException("Couldn't update the resume", file.getName(), e);
         }
@@ -63,7 +65,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     protected void doSave(File file, Resume resume) {
         try {
             if (file.createNewFile()) {
-                doWrite(new BufferedOutputStream(new FileOutputStream(file)), resume);
+                serialization.doWrite(new BufferedOutputStream(new FileOutputStream(file)), resume);
             } else {
                 throw new StorageException("Couldn't save the file", file.getName());
             }
@@ -79,7 +81,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         if (files != null) {
             for (File file : files) {
                 try {
-                    resumes.add(doRead(new BufferedInputStream(new FileInputStream(file))));
+                    resumes.add(serialization.doRead(new BufferedInputStream(new FileInputStream(file))));
                 } catch (IOException e) {
                     throw new StorageException("Couldn't read the resume.", file.getName(), e);
                 }
@@ -103,7 +105,4 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         }
     }
 
-    protected abstract void doWrite(OutputStream outputStream, Resume resume) throws IOException;
-
-    protected abstract Resume doRead(InputStream inputStream) throws IOException;
 }

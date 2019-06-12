@@ -8,12 +8,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class ObjectStreamPathStorageTest extends AbstractStorageTest {
+public class PathStorageTest extends AbstractStorageTest {
 
     private static final Path STORAGE_DIRECTORY;
 
-    public ObjectStreamPathStorageTest() {
-        super(new ObjectStreamPathStorage(STORAGE_DIRECTORY));
+    public PathStorageTest() {
+        super(new PathStorage(STORAGE_DIRECTORY, new ObjectSerialization()));
     }
 
     static {

@@ -11,11 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class AbstractPathStorage extends AbstractStorage<Path> {
+public class PathStorage extends AbstractStorage<Path> {
 
     private final Path directory;
+    private final SerializationStrategy serialization;
 
-    public AbstractPathStorage(Path directory) {
+    public PathStorage(Path directory, SerializationStrategy serialization) {
+        Objects.requireNonNull(serialization, "serialization is required");
         Objects.requireNonNull(directory, "directory is required");
         if (!Files.isDirectory(directory)) {
             throw new IllegalArgumentException(directory.getFileName() + " is not directory.");
@@ -24,6 +26,7 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
             throw new StorageException("directory is not available for RW operations.", directory.getFileName().toString());
         }
         this.directory = directory;
+        this.serialization = serialization;
     }
 
     @Override
@@ -39,7 +42,7 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
     @Override
     protected Resume doGet(Path path) {
         try {
-            return doRead(new BufferedInputStream(Files.newInputStream(path)));
+            return serialization.doRead(new BufferedInputStream(Files.newInputStream(path)));
         } catch (IOException e) {
             throw new StorageException("Couldn't read the resume", path.getFileName().toString(), e);
         }
@@ -48,7 +51,7 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
     @Override
     protected void doUpdate(Path path, Resume resume) {
         try {
-            doWrite(new BufferedOutputStream(Files.newOutputStream(path)), resume);
+            serialization.doWrite(new BufferedOutputStream(Files.newOutputStream(path)), resume);
         } catch (IOException e) {
             throw new StorageException("Couldn't update the resume", path.getFileName().toString(), e);
         }
@@ -67,7 +70,7 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
     protected void doSave(Path path, Resume resume) {
         try {
             Files.createFile(path);
-            doWrite(new BufferedOutputStream(Files.newOutputStream(path)), resume);
+            serialization.doWrite(new BufferedOutputStream(Files.newOutputStream(path)), resume);
         } catch (IOException e) {
             throw new StorageException("Couldn't create the new resume", path.getFileName().toString(), e);
         }
@@ -79,7 +82,7 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
         try {
             Files.list(directory).forEach(path -> {
                 try {
-                    resumes.add(doRead(new BufferedInputStream(Files.newInputStream(path))));
+                    resumes.add(serialization.doRead(new BufferedInputStream(Files.newInputStream(path))));
                 } catch (IOException e) {
                     throw new StorageException("Couldn't read the storage", path.getFileName().toString(), e);
                 }
@@ -108,7 +111,4 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
         }
     }
 
-    protected abstract void doWrite(OutputStream outputStream, Resume resume) throws IOException;
-
-    protected abstract Resume doRead(InputStream inputStream) throws IOException;
 }

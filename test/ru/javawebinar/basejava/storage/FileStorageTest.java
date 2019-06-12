@@ -4,15 +4,16 @@ import ru.javawebinar.basejava.exception.StorageException;
 
 import java.io.File;
 
-public class ObjectStreamStorageTest extends AbstractStorageTest {
+public class FileStorageTest extends AbstractStorageTest{
 
     private static final File STORAGE_DIRECTORY;
 
-    public ObjectStreamStorageTest() {
-        super(new ObjectStreamStorage(STORAGE_DIRECTORY));
+    public FileStorageTest() {
+        super(new FileStorage(STORAGE_DIRECTORY, new ObjectSerialization()));
     }
 
     static {
+        // TODO
         STORAGE_DIRECTORY = new File(System.getProperty("user.home") + File.separatorChar + "ResumeStorage");
         if (!STORAGE_DIRECTORY.exists()) {
             if (!STORAGE_DIRECTORY.mkdir()) {
