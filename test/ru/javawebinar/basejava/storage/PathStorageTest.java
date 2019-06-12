@@ -17,7 +17,7 @@ public class PathStorageTest extends AbstractStorageTest {
     }
 
     static {
-        STORAGE_DIRECTORY = Paths.get(System.getProperty("user.home") + File.separatorChar + "ResumeStorage");
+        STORAGE_DIRECTORY = Paths.get("./" + File.separatorChar + "ResumeStorage");
         if (!Files.exists(STORAGE_DIRECTORY)) {
             try {
                 Files.createDirectory(STORAGE_DIRECTORY);

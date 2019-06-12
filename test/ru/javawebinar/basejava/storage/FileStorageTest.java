@@ -13,8 +13,7 @@ public class FileStorageTest extends AbstractStorageTest{
     }
 
     static {
-        // TODO
-        STORAGE_DIRECTORY = new File(System.getProperty("user.home") + File.separatorChar + "ResumeStorage");
+        STORAGE_DIRECTORY = new File("./" + File.separatorChar + "ResumeStorage");
         if (!STORAGE_DIRECTORY.exists()) {
             if (!STORAGE_DIRECTORY.mkdir()) {
                 throw new StorageException("Couldn't create storage", STORAGE_DIRECTORY.getName());
