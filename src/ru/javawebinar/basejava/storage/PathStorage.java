@@ -4,13 +4,16 @@ import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
 import ru.javawebinar.basejava.storage.Serialization.SerializationStrategy;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 public class PathStorage extends AbstractStorage<Path> {
 
@@ -80,36 +83,33 @@ public class PathStorage extends AbstractStorage<Path> {
     @Override
     protected List<Resume> copyStorage() {
         List<Resume> resumes = new ArrayList<>();
-        try {
-            Files.list(directory).forEach(path -> {
-                try {
-                    resumes.add(serialization.doRead(new BufferedInputStream(Files.newInputStream(path))));
-                } catch (IOException e) {
-                    throw new StorageException("Couldn't read the storage", path.getFileName().toString(), e);
-                }
-            });
-        } catch (IOException e) {
-            throw new StorageException("Couldn't read the storage", null, e);
-        }
+        getPathList("Couldn't read the storage").forEach(path -> {
+            try {
+                resumes.add(serialization.doRead(new BufferedInputStream(Files.newInputStream(path))));
+            } catch (IOException e) {
+                throw new StorageException("Couldn't read the storage", path.getFileName().toString(), e);
+            }
+        });
         return resumes;
     }
 
     @Override
     public int size() {
-        try {
-            return (int) Files.list(directory).count();
-        } catch (IOException e) {
-            throw new StorageException("Couldn't count storage size", null, e);
-        }
+        return (int) getPathList("Couldn't count storage size").count();
     }
 
     @Override
     public void clear() {
+        getPathList("Couldn't clear storage").forEach(this::doDelete);
+    }
+
+    private Stream<Path> getPathList(String msgException) {
         try {
-            Files.list(directory).forEach(this::doDelete);
+            return Files.list(directory);
         } catch (IOException e) {
-            throw new StorageException("Couldn't clear storage", null, e);
+            throw new StorageException(msgException, null, e);
         }
+
     }
 
 }
