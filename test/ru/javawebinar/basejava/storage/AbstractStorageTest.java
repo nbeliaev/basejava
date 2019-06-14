@@ -2,18 +2,25 @@ package ru.javawebinar.basejava.storage;
 
 import org.junit.Before;
 import org.junit.Test;
+import ru.javawebinar.basejava.ResumeTestData;
 import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
+import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
-import ru.javawebinar.basejava.ResumeTestData;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public abstract class AbstractStorageTest {
 
     protected final Storage storage;
+    protected static final Path STORAGE_DIRECTORY;
     private final static String UUID_1 = "uuid1";
     private final static String UUID_2 = "uuid2";
     private final static String UUID_3 = "uuid3";
@@ -23,6 +30,17 @@ public abstract class AbstractStorageTest {
 
     protected AbstractStorageTest(Storage storage) {
         this.storage = storage;
+    }
+
+    static {
+        STORAGE_DIRECTORY = Paths.get("./" + File.separatorChar + "ResumeStorage");
+        if (!Files.exists(STORAGE_DIRECTORY)) {
+            try {
+                Files.createDirectory(STORAGE_DIRECTORY);
+            } catch (IOException e) {
+                throw new StorageException("Couldn't create storage", STORAGE_DIRECTORY.getFileName().toString());
+            }
+        }
     }
 
     @Before
