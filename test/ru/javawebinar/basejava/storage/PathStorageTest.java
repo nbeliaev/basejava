@@ -1,6 +1,7 @@
 package ru.javawebinar.basejava.storage;
 
 import ru.javawebinar.basejava.exception.StorageException;
+import ru.javawebinar.basejava.storage.Serialization.ObjectSerialization;
 
 import java.io.File;
 import java.io.IOException;
