@@ -1,8 +1,11 @@
 package ru.javawebinar.basejava.model;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import java.io.Serializable;
 import java.util.Objects;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public abstract class AbstractSection<T> implements Serializable {
 
     private T content;
@@ -10,6 +13,9 @@ public abstract class AbstractSection<T> implements Serializable {
     AbstractSection(T content) {
         Objects.requireNonNull(content, "content is required");
         this.content = content;
+    }
+
+    protected AbstractSection() {
     }
 
     T getContent() {

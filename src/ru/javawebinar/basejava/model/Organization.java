@@ -1,13 +1,18 @@
 package ru.javawebinar.basejava.model;
 
 import ru.javawebinar.basejava.util.DateUtil;
+import ru.javawebinar.basejava.util.LocalDateAdapter;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Organization implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -24,14 +29,20 @@ public class Organization implements Serializable {
         this.positions = Arrays.asList(positions);
     }
 
+    public Organization() {
+    }
+
     public List<Position> getPositions() {
         return positions;
     }
 
+    @XmlAccessorType(XmlAccessType.FIELD)
     public static class Position implements Serializable {
         private static final long serialVersionUID = 1L;
 
+        @XmlJavaTypeAdapter(LocalDateAdapter.class)
         private LocalDate beginDate;
+        @XmlJavaTypeAdapter(LocalDateAdapter.class)
         private LocalDate endDate;
         private String description;
 
@@ -48,6 +59,9 @@ public class Organization implements Serializable {
             this.beginDate = beginDate;
             this.endDate = DateUtil.NOW;
             this.description = description;
+        }
+
+        public Position() {
         }
 
         public LocalDate getBeginDate() {
