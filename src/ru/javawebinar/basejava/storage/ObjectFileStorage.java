@@ -9,12 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class FileStorage extends AbstractStorage<File> {
+public class ObjectFileStorage extends AbstractStorage<File> {
 
     private final File directory;
     private final SerializationStrategy serialization;
 
-    public FileStorage(File directory, SerializationStrategy serialization) {
+    public ObjectFileStorage(File directory, SerializationStrategy serialization) {
         Objects.requireNonNull(serialization, "serialization is required");
         Objects.requireNonNull(directory, "directory is required");
         if (!directory.isDirectory()) {

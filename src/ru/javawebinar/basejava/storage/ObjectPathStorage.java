@@ -15,12 +15,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-public class PathStorage extends AbstractStorage<Path> {
+public class ObjectPathStorage extends AbstractStorage<Path> {
 
     private final Path directory;
     private final SerializationStrategy serialization;
 
-    public PathStorage(Path directory, SerializationStrategy serialization) {
+    public ObjectPathStorage(Path directory, SerializationStrategy serialization) {
         Objects.requireNonNull(serialization, "serialization is required");
         Objects.requireNonNull(directory, "directory is required");
         if (!Files.isDirectory(directory)) {
