@@ -4,6 +4,7 @@ import ru.javawebinar.basejava.model.*;
 import ru.javawebinar.basejava.util.XmlParser;
 
 import java.io.*;
+import java.util.ArrayList;
 
 public class XmlSerialization implements SerializationStrategy {
     private XmlParser xmlParser;
@@ -11,7 +12,7 @@ public class XmlSerialization implements SerializationStrategy {
     public XmlSerialization() {
         xmlParser = new XmlParser(
                 Resume.class, SimpleSection.class,
-                ListSection.class, Link.class,
+                ListSection.class, Link.class, ArrayList.class,
                 Organization.class, OrganizationSection.class, Organization.Position.class);
     }
 
