@@ -14,6 +14,10 @@ public class ListSection extends AbstractSection<List<String>> {
         super(new ArrayList<>(Arrays.asList(content)));
     }
 
+    public ListSection(List<String> content) {
+        super(content);
+    }
+
     public ListSection() {
     }
 }

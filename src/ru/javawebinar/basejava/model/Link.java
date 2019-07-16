@@ -26,6 +26,14 @@ public class Link implements Serializable {
     public Link() {
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

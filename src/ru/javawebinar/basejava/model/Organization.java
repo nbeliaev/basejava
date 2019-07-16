@@ -24,12 +24,21 @@ public class Organization implements Serializable {
         this.positions = Arrays.asList(positions);
     }
 
+    public Organization(String name, String url, List<Position> positions) {
+        this.link = new Link(name, url);
+        this.positions = positions;
+    }
+
     public Organization(String name, Position... positions) {
         this.link = new Link(name);
         this.positions = Arrays.asList(positions);
     }
 
     public Organization() {
+    }
+
+    public Link getLink() {
+        return link;
     }
 
     public List<Position> getPositions() {

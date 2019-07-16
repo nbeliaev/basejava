@@ -18,7 +18,7 @@ public abstract class AbstractSection<T> implements Serializable {
     protected AbstractSection() {
     }
 
-    T getContent() {
+    public T getContent() {
         return content;
     }
 
