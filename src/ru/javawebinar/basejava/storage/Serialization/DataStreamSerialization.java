@@ -32,17 +32,17 @@ public class DataStreamSerialization implements SerializationStrategy {
                     switch (sectionType) {
                         case PERSONAL:
                         case OBJECTIVE:
-                            writeLine(out, (String) section.getContent());
+                            writeLine(out, ((SimpleSection) section).getContent());
                             break;
                         case ACHIEVEMENT:
                         case QUALIFICATIONS:
-                            final List<String> simpleSection = (List<String>) section.getContent();
+                            final List<String> simpleSection = ((ListSection) section).getContent();
                             out.writeByte(simpleSection.size());
                             simpleSection.forEach(item -> writeLine(out, item));
                             break;
                         case EXPERIENCE:
                         case EDUCATION:
-                            final List<Organization> organizationsSection = (List<Organization>) section.getContent();
+                            final List<Organization> organizationsSection = ((OrganizationSection) section).getContent();
                             out.writeByte(organizationsSection.size());
                             organizationsSection.forEach(item -> {
                                 Link link = item.getLink();
