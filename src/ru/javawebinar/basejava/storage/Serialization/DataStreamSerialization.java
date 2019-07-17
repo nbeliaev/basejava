@@ -6,6 +6,7 @@ import java.io.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class DataStreamSerialization implements SerializationStrategy {
 
@@ -16,55 +17,59 @@ public class DataStreamSerialization implements SerializationStrategy {
             out.writeUTF(resume.getFullName());
 
             out.writeByte(resume.getContacts().size());
-            resume.getContacts().forEach((contactType, contact) -> {
-                try {
-                    out.writeUTF(contactType.name());
-                    out.writeUTF(contact);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
+            writeWithException(
+                    resume.getContacts(),
+                    out,
+                    (collection, stream) -> {
+                        for (Map.Entry<ContactType, String> entry : ((Map<ContactType, String>) collection).entrySet()) {
+                            writeLine(stream, entry.getKey().name());
+                            writeLine(stream, entry.getValue());
+                        }
+                    });
 
             out.writeByte(resume.getSections().size());
-            resume.getSections().forEach((sectionType, section) -> {
-                try {
-                    out.writeUTF(sectionType.name());
-                    switch (sectionType) {
-                        case PERSONAL:
-                        case OBJECTIVE:
-                            writeLine(out, ((SimpleSection) section).getContent());
-                            break;
-                        case ACHIEVEMENT:
-                        case QUALIFICATIONS:
-                            final List<String> simpleSection = ((ListSection) section).getContent();
-                            out.writeByte(simpleSection.size());
-                            simpleSection.forEach(item -> writeLine(out, item));
-                            break;
-                        case EXPERIENCE:
-                        case EDUCATION:
-                            final List<Organization> organizationsSection = ((OrganizationSection) section).getContent();
-                            out.writeByte(organizationsSection.size());
-                            organizationsSection.forEach(item -> {
-                                Link link = item.getLink();
-                                writeLine(out, link.getName());
-                                writeLine(out, link.getUrl());
-                                try {
-                                    out.writeByte(item.getPositions().size());
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                item.getPositions().forEach(position -> {
-                                    writeLine(out, position.getBeginDate().toString());
-                                    writeLine(out, position.getEndDate().toString());
-                                    writeLine(out, position.getDescription());
-                                });
-                            });
-                            break;
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
+            writeWithException(
+                    resume.getSections(),
+                    out,
+                    ((collection, stream) -> {
+                        for (Map.Entry<SectionType, Section> entry : ((Map<SectionType, Section>) collection).entrySet()) {
+                            SectionType sectionType = entry.getKey();
+                            writeLine(stream, sectionType.name());
+                            switch (sectionType) {
+                                case PERSONAL:
+                                case OBJECTIVE:
+                                    writeLine(stream, (((SimpleSection) entry.getValue())).getContent());
+                                    break;
+                                case ACHIEVEMENT:
+                                case QUALIFICATIONS:
+                                    final List<String> simpleSections = ((ListSection) entry.getValue()).getContent();
+                                    stream.writeByte(simpleSections.size());
+                                    for (String item : simpleSections) {
+                                        writeLine(stream, item);
+                                    }
+                                    break;
+                                case EXPERIENCE:
+                                case EDUCATION:
+                                    final List<Organization> organizationSections = ((OrganizationSection) entry.getValue()).getContent();
+                                    stream.writeByte(organizationSections.size());
+                                    for (Organization item : organizationSections) {
+                                        Link link = item.getLink();
+                                        writeLine(stream, link.getName());
+                                        writeLine(stream, link.getUrl());
+
+                                        stream.writeByte(item.getPositions().size());
+                                        final List<Organization.Position> positions = item.getPositions();
+                                        for (Organization.Position position : positions) {
+                                            writeLine(stream, position.getBeginDate().toString());
+                                            writeLine(stream, position.getEndDate().toString());
+                                            writeLine(stream, position.getTitle());
+                                            writeLine(stream, position.getDescription());
+                                        }
+                                    }
+                                    break;
+                            }
+                        }
+                    }));
         }
     }
 
@@ -110,6 +115,7 @@ public class DataStreamSerialization implements SerializationStrategy {
                                         new Organization.Position(
                                                 LocalDate.parse(input.readUTF()),
                                                 LocalDate.parse(input.readUTF()),
+                                                input.readUTF(),
                                                 input.readUTF()));
                             }
                             Organization organization = new Organization(name, url, positions);
@@ -123,11 +129,16 @@ public class DataStreamSerialization implements SerializationStrategy {
         }
     }
 
-    private void writeLine(DataOutputStream out, String item) {
-        try {
-            out.writeUTF(item == null ? "" : item);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void writeLine(DataOutputStream out, String str) throws IOException {
+        out.writeUTF(str == null ? "" : str);
+    }
+
+    private <T> void writeWithException(T collection, DataOutputStream out, Action action) throws IOException {
+        action.writeCollection(collection, out);
+    }
+
+    @FunctionalInterface
+    private interface Action<T> {
+        void writeCollection(T collection, DataOutputStream stream) throws IOException;
     }
 }
