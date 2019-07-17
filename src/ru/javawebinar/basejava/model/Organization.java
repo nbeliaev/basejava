@@ -86,6 +86,26 @@ public class Organization implements Serializable {
         }
 
         @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Position position = (Position) o;
+
+            if (!beginDate.equals(position.beginDate)) return false;
+            if (!endDate.equals(position.endDate)) return false;
+            return Objects.equals(description, position.description);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = beginDate.hashCode();
+            result = 31 * result + endDate.hashCode();
+            result = 31 * result + (description != null ? description.hashCode() : 0);
+            return result;
+        }
+
+        @Override
         public String toString() {
             return "Position{" +
                     "beginDate=" + beginDate +
@@ -93,14 +113,6 @@ public class Organization implements Serializable {
                     ", description='" + description + '\'' +
                     '}';
         }
-    }
-
-    @Override
-    public String toString() {
-        return "Organization{" +
-                "link=" + link +
-                ", positions=" + positions +
-                '}';
     }
 
     @Override
@@ -120,5 +132,13 @@ public class Organization implements Serializable {
         int result = link.hashCode();
         result = 31 * result + positions.hashCode();
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Organization{" +
+                "link=" + link +
+                ", positions=" + positions +
+                '}';
     }
 }
