@@ -49,6 +49,8 @@ public class ResumeTestData {
                 "http://javaops.ru/",
                 new Organization.Position(
                         DateUtil.of(2013, 10),
+                        DateUtil.NOW,
+                        "Автор проекта",
                         "Создание, организация и проведение Java онлайн проектов и стажировок"));
         experience.add(organization);
 
@@ -57,6 +59,7 @@ public class ResumeTestData {
                 new Organization.Position(
                         DateUtil.of(2014, 10),
                         DateUtil.of(2016, 1),
+                        "Старший разработчик",
                         "Проектирование и разработка онлайн платформы управления проектами Wrike"));
         experience.add(organization);
 

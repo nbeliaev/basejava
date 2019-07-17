@@ -1,6 +1,5 @@
 package ru.javawebinar.basejava.model;
 
-import ru.javawebinar.basejava.util.DateUtil;
 import ru.javawebinar.basejava.util.LocalDateAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -53,21 +52,22 @@ public class Organization implements Serializable {
         private LocalDate beginDate;
         @XmlJavaTypeAdapter(LocalDateAdapter.class)
         private LocalDate endDate;
+        private String title;
         private String description;
 
-        public Position(LocalDate beginDate, LocalDate endDate, String description) {
-            Objects.requireNonNull(beginDate, "beginDate is required");
-            Objects.requireNonNull(endDate, "endDate is required");
-            this.beginDate = beginDate;
-            this.endDate = endDate;
+        public Position(LocalDate beginDate, LocalDate endDate, String title, String description) {
+            this(beginDate, endDate, title);
+            Objects.requireNonNull(endDate, "description is required");
             this.description = description;
         }
 
-        public Position(LocalDate beginDate, String description) {
+        public Position(LocalDate beginDate, LocalDate endDate, String title) {
             Objects.requireNonNull(beginDate, "beginDate is required");
+            Objects.requireNonNull(beginDate, "endDate is required");
+            Objects.requireNonNull(endDate, "title is required");
             this.beginDate = beginDate;
-            this.endDate = DateUtil.NOW;
-            this.description = description;
+            this.endDate = endDate;
+            this.title = title;
         }
 
         public Position() {
@@ -79,6 +79,10 @@ public class Organization implements Serializable {
 
         public LocalDate getEndDate() {
             return endDate;
+        }
+
+        public String getTitle() {
+            return title;
         }
 
         public String getDescription() {
@@ -94,6 +98,7 @@ public class Organization implements Serializable {
 
             if (!beginDate.equals(position.beginDate)) return false;
             if (!endDate.equals(position.endDate)) return false;
+            if (!title.equals(position.title)) return false;
             return Objects.equals(description, position.description);
         }
 
@@ -101,6 +106,7 @@ public class Organization implements Serializable {
         public int hashCode() {
             int result = beginDate.hashCode();
             result = 31 * result + endDate.hashCode();
+            result = 31 * result + title.hashCode();
             result = 31 * result + (description != null ? description.hashCode() : 0);
             return result;
         }
@@ -110,6 +116,7 @@ public class Organization implements Serializable {
             return "Position{" +
                     "beginDate=" + beginDate +
                     ", endDate=" + endDate +
+                    ", title=" + title +
                     ", description='" + description + '\'' +
                     '}';
         }
