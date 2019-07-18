@@ -17,87 +17,85 @@ public class DataStreamSerialization implements SerializationStrategy {
             out.writeUTF(resume.getFullName());
 
             out.writeByte(resume.getContacts().size());
-            writeWithException(
-                    resume.getContacts(),
-                    out,
-                    (collection, stream) -> {
-                        for (Map.Entry<ContactType, String> entry : ((Map<ContactType, String>) collection).entrySet()) {
-                            writeLine(stream, entry.getKey().name());
-                            writeLine(stream, entry.getValue());
-                        }
-                    });
+            final Map<ContactType, String> contacts = resume.getContacts();
+            for (Map.Entry<ContactType, String> entry : contacts.entrySet()) {
+                writeWithException(entry, (action -> {
+                    writeLine(out, entry.getKey().name());
+                    writeLine(out, entry.getValue());
+                }));
+            }
 
             out.writeByte(resume.getSections().size());
-            writeWithException(
-                    resume.getSections(),
-                    out,
-                    ((collection, stream) -> {
-                        for (Map.Entry<SectionType, Section> entry : ((Map<SectionType, Section>) collection).entrySet()) {
-                            SectionType sectionType = entry.getKey();
-                            writeLine(stream, sectionType.name());
-                            switch (sectionType) {
-                                case PERSONAL:
-                                case OBJECTIVE:
-                                    writeLine(stream, (((SimpleSection) entry.getValue())).getContent());
-                                    break;
-                                case ACHIEVEMENT:
-                                case QUALIFICATIONS:
-                                    final List<String> simpleSections = ((ListSection) entry.getValue()).getContent();
-                                    stream.writeByte(simpleSections.size());
-                                    for (String item : simpleSections) {
-                                        writeLine(stream, item);
-                                    }
-                                    break;
-                                case EXPERIENCE:
-                                case EDUCATION:
-                                    final List<Organization> organizationSections = ((OrganizationSection) entry.getValue()).getContent();
-                                    stream.writeByte(organizationSections.size());
-                                    for (Organization item : organizationSections) {
-                                        Link link = item.getLink();
-                                        writeLine(stream, link.getName());
-                                        writeLine(stream, link.getUrl());
+            final Map<SectionType, Section> sections = resume.getSections();
+            for (Map.Entry<SectionType, Section> entry : sections.entrySet()) {
+                SectionType sectionType = entry.getKey();
+                writeLine(out, sectionType.name());
+                switch (sectionType) {
+                    case PERSONAL:
+                    case OBJECTIVE:
+                        writeWithException(entry, (action -> writeLine(out, ((SimpleSection) entry.getValue()).getContent())));
+                        break;
+                    case ACHIEVEMENT:
+                    case QUALIFICATIONS:
+                        final List<String> simpleSections = ((ListSection) entry.getValue()).getContent();
+                        out.writeByte(simpleSections.size());
+                        for (String item : simpleSections) {
+                            writeWithException(item, (action -> writeLine(out, item)));
+                        }
+                        break;
+                    case EXPERIENCE:
+                    case EDUCATION:
+                        final List<Organization> organizationSections = ((OrganizationSection) entry.getValue()).getContent();
+                        out.writeByte(organizationSections.size());
+                        for (Organization item : organizationSections) {
+                            writeWithException(item, (action -> {
+                                Link link = item.getLink();
+                                writeLine(out, link.getName());
+                                writeLine(out, link.getUrl());
+                            }));
 
-                                        stream.writeByte(item.getPositions().size());
-                                        final List<Organization.Position> positions = item.getPositions();
-                                        for (Organization.Position position : positions) {
-                                            writeLine(stream, position.getBeginDate().toString());
-                                            writeLine(stream, position.getEndDate().toString());
-                                            writeLine(stream, position.getTitle());
-                                            writeLine(stream, position.getDescription());
-                                        }
-                                    }
-                                    break;
+                            out.writeByte(item.getPositions().size());
+                            final List<Organization.Position> positions = item.getPositions();
+                            for (Organization.Position position : positions) {
+                                writeWithException(position, (action -> {
+                                    writeLine(out, position.getBeginDate().toString());
+                                    writeLine(out, position.getEndDate().toString());
+                                    writeLine(out, position.getTitle());
+                                    writeLine(out, position.getDescription());
+                                }));
                             }
                         }
-                    }));
+                        break;
+                }
+            }
         }
     }
 
     @Override
     public Resume doRead(InputStream inputStream) throws IOException {
-        try (DataInputStream input = new DataInputStream(inputStream)) {
-            Resume resume = new Resume(input.readUTF(), input.readUTF());
+        try (final DataInputStream input = new DataInputStream(inputStream)) {
+            Resume resume = new Resume(readLine(input), readLine(input));
 
             byte size;
             size = input.readByte();
             for (byte i = 0; i < size; i++) {
-                resume.addContact(ContactType.valueOf(input.readUTF()), input.readUTF());
+                resume.addContact(ContactType.valueOf(readLine(input)), readLine(input));
             }
 
             size = input.readByte();
             for (byte i = 0; i < size; i++) {
-                SectionType sectionType = SectionType.valueOf(input.readUTF());
+                SectionType sectionType = SectionType.valueOf(readLine(input));
                 switch (sectionType) {
                     case PERSONAL:
                     case OBJECTIVE:
-                        resume.addSection(sectionType, new SimpleSection(input.readUTF()));
+                        resume.addSection(sectionType, new SimpleSection(readLine(input)));
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
                         final byte listSectionSize = input.readByte();
                         List<String> content = new ArrayList<>();
                         for (int j = 0; j < listSectionSize; j++) {
-                            content.add(input.readUTF());
+                            content.add(readLine(input));
                         }
                         resume.addSection(sectionType, new ListSection(content));
                         break;
@@ -106,8 +104,8 @@ public class DataStreamSerialization implements SerializationStrategy {
                         List<Organization> organizations = new ArrayList<>();
                         final byte organizationSectionSize = input.readByte();
                         for (int j = 0; j < organizationSectionSize; j++) {
-                            final String name = input.readUTF();
-                            final String url = input.readUTF();
+                            final String name = readLine(input);
+                            final String url = readLine(input);
                             final byte positionSize = input.readByte();
                             List<Organization.Position> positions = new ArrayList<>();
                             for (int k = 0; k < positionSize; k++) {
@@ -115,8 +113,8 @@ public class DataStreamSerialization implements SerializationStrategy {
                                         new Organization.Position(
                                                 LocalDate.parse(input.readUTF()),
                                                 LocalDate.parse(input.readUTF()),
-                                                input.readUTF(),
-                                                input.readUTF()));
+                                                readLine(input),
+                                                readLine(input)));
                             }
                             Organization organization = new Organization(name, url, positions);
                             organizations.add(organization);
@@ -133,12 +131,17 @@ public class DataStreamSerialization implements SerializationStrategy {
         out.writeUTF(str == null ? "" : str);
     }
 
-    private <T> void writeWithException(T collection, DataOutputStream out, Action action) throws IOException {
-        action.writeCollection(collection, out);
+    private String readLine(DataInputStream input) throws IOException {
+        final String s = input.readUTF();
+        return s.isEmpty() ? null : s;
+    }
+
+    private <T> void writeWithException(T item, Action action) throws IOException {
+        action.writeItem(item);
     }
 
     @FunctionalInterface
     private interface Action<T> {
-        void writeCollection(T collection, DataOutputStream stream) throws IOException;
+        void writeItem(T item) throws IOException;
     }
 }
