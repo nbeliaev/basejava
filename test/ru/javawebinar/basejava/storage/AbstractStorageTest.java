@@ -13,7 +13,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -58,7 +60,9 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void getAllSorted() {
-        assertEquals(Arrays.asList(RESUME_1, RESUME_2, RESUME_3), storage.getAllSorted());
+        List<Resume> list = storage.getAllSorted();
+        assertEquals(3, list.size());
+        assertEquals(new ArrayList<>(Arrays.asList(RESUME_1, RESUME_2, RESUME_3)), list);
     }
 
     @Test
