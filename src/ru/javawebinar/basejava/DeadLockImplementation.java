@@ -1,46 +1,28 @@
 package ru.javawebinar.basejava;
 
 public class DeadLockImplementation {
-    private static int COMMON_ID;
-    private final int id = COMMON_ID;
 
     public static void main(String[] args) {
         final DeadLockImplementation a = new DeadLockImplementation();
         final DeadLockImplementation b = new DeadLockImplementation();
-
-        new Thread(() -> {
-            try {
-                doJob(a, b);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }).start();
-
-        new Thread(() -> {
-            try {
-                doJob(b, a);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }).start();
+        new Thread(() -> doJob(a, b)).start();
+        new Thread(() -> doJob(b, a)).start();
     }
 
-    private DeadLockImplementation() {
-        COMMON_ID++;
-    }
-
-    static {
-        COMMON_ID++;
-    }
-
-    private static void doJob(DeadLockImplementation a, DeadLockImplementation b) throws InterruptedException {
-        System.out.println("try to lock " + a.id);
+    private static void doJob(DeadLockImplementation a, DeadLockImplementation b) {
+        final String threadName = Thread.currentThread().getName();
+        System.out.println("try to lock " + threadName);
         synchronized (a) {
-            System.out.println("lock is successful for " + a.id);
-            System.out.println("try to lock " + b.id);
+            System.out.println("lock is successful for " + threadName);
+            try {
+                Thread.sleep(1_000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("try to lock " + threadName);
             synchronized (b) {
-                System.out.println("lock is successful for " + b.id);
-                System.out.println("job is successful");
+                System.out.println("lock is successful for " + threadName);
+                System.out.println("job is done");
             }
         }
     }
