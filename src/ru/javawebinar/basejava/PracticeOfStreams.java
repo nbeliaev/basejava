@@ -26,13 +26,12 @@ public class PracticeOfStreams {
     }
 
     private static List<Integer> oddOrEven(List<Integer> integers) {
-        Predicate<Integer> oddFilter = i -> i % 2 != 0;
-        Predicate<Integer> evenFilter = i -> i % 2 == 0;
+        Predicate<Integer> filter = i -> i % 2 != 0;
         final int sum = integers.stream()
                 .mapToInt(Integer::intValue)
                 .sum();
         return integers.stream()
-                .filter(sum % 2 == 0 ? oddFilter : evenFilter)
+                .filter(sum % 2 == 0 ? filter : filter.negate())
                 .collect(Collectors.toList());
     }
 }
