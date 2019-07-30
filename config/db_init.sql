@@ -1,25 +1,19 @@
-create table resume
+CREATE TABLE resume
 (
-    uuid      char(36) not null
-        constraint resume_pk primary key,
-    full_name text     not null
+    uuid      CHAR(36) NOT NULL
+        CONSTRAINT resume_pk PRIMARY KEY,
+    full_name TEXT     NOT NULL
 );
 
-alter table resume
-    owner to postgres;
-
-create table contact_type
+CREATE TABLE contact_type
 (
-    id    serial not null
-        constraint contact_type_pk primary key,
-    value text   not null
+    id    SERIAL NOT NULL
+        CONSTRAINT contact_type_pk PRIMARY KEY,
+    value TEXT   NOT NULL
 );
 
-alter table contact_type
-    owner to postgres;
-
-insert into contact_type (value)
-values ('MOBILE_PHONE'),
+INSERT INTO contact_type (value)
+VALUES ('MOBILE_PHONE'),
        ('SKYPE'),
        ('EMAIL'),
        ('LINKEDIN'),
@@ -27,20 +21,17 @@ values ('MOBILE_PHONE'),
        ('STACKOVERFLOW'),
        ('WEBPAGE');
 
-create table contact
+CREATE TABLE contact
 (
-    id          serial   not null
-        constraint contact_pk primary key,
-    resume_uuid char(36) not null
-        constraint contact_resume_uuid_fk references resume on delete cascade,
-    type_id     int      not null
-        constraint contact_contact_type_id_fk references contact_type on delete cascade,
-    type        text     not null,
-    value       text     not null
+    id          SERIAL   NOT NULL
+        CONSTRAINT contact_pk PRIMARY KEY,
+    resume_uuid CHAR(36) NOT NULL
+        CONSTRAINT contact_resume_uuid_fk references resume on delete cascade,
+    type_id     INT      NOT NULL
+        CONSTRAINT contact_contact_type_id_fk references contact_type on delete cascade,
+    type        TEXT     NOT NULL,
+    value       TEXT     NOT NULL
 );
 
-create unique index contact_resume_uuid_type_id_uindex
-    on contact (resume_uuid, type_id);
-
-alter table contact
-    owner to postgres;
+CREATE UNIQUE INDEX contact_resume_uuid_type_id_uindex
+    ON contact (resume_uuid, type_id);
