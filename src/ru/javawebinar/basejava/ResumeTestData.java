@@ -1,10 +1,6 @@
 package ru.javawebinar.basejava;
 
-import ru.javawebinar.basejava.model.*;
-import ru.javawebinar.basejava.util.DateUtil;
-
-import java.util.ArrayList;
-import java.util.List;
+import ru.javawebinar.basejava.model.Resume;
 
 public class ResumeTestData {
 
@@ -16,7 +12,7 @@ public class ResumeTestData {
 
         Resume resume = new Resume(uuid, name);
         resume.setFullName("Григорий Кислин");
-        resume.addContact(ContactType.MOBILE_PHONE, "+7(921) 855-0482");
+        /*resume.addContact(ContactType.MOBILE_PHONE, "+7(921) 855-0482");
         resume.addContact(ContactType.SKYPE, "grigory.kislin");
         resume.addContact(ContactType.EMAIL, "gkislin@yandex.ru");
         resume.addContact(ContactType.LINKEDIN, "https://www.linkedin.com/in/gkislin");
@@ -99,7 +95,7 @@ public class ResumeTestData {
         education.add(organization);
 
         section = new OrganizationSection(education);
-        resume.addSection(SectionType.EDUCATION, section);
+        resume.addSection(SectionType.EDUCATION, section);*/
 
         return resume;
     }
