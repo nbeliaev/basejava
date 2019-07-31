@@ -7,21 +7,17 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class SqlHelper<T> {
-    private final ConnectionFactory CONNECTION;
-    private final String QUERY;
-    private final SqlExecutor<T> EXECUTOR;
+public class SqlHelper {
+    private final ConnectionFactory connection;
 
-    public SqlHelper(ConnectionFactory connection, String query, SqlExecutor<T> executor) {
-        CONNECTION = connection;
-        QUERY = query;
-        EXECUTOR = executor;
+    public SqlHelper(ConnectionFactory connection) {
+        this.connection = connection;
     }
 
-    public T execute() {
-        try (final Connection cn = CONNECTION.getConnection();
-             final PreparedStatement ps = cn.prepareStatement(QUERY)) {
-            return EXECUTOR.executeQuery(ps);
+    public <T> T execute(String query, SqlExecutor<T> executor) {
+        try (final Connection cn = connection.getConnection();
+             final PreparedStatement ps = cn.prepareStatement(query)) {
+            return executor.executeQuery(ps);
         } catch (SQLException e) {
             final String uniqueViolation = "23505";
             if (e.getSQLState().equals(uniqueViolation)) {
