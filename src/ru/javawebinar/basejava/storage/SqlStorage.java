@@ -2,7 +2,6 @@ package ru.javawebinar.basejava.storage;
 
 import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.Resume;
-import ru.javawebinar.basejava.sql.ConnectionFactory;
 import ru.javawebinar.basejava.sql.SqlHelper;
 
 import java.sql.DriverManager;
@@ -15,8 +14,7 @@ public class SqlStorage implements Storage {
     private final SqlHelper sqlHelper;
 
     SqlStorage(String dbUrl, String dbUser, String dbPwd) {
-        ConnectionFactory connection = () -> DriverManager.getConnection(dbUrl, dbUser, dbPwd);
-        sqlHelper = new SqlHelper(connection);
+        sqlHelper = new SqlHelper(() -> DriverManager.getConnection(dbUrl, dbUser, dbPwd));
     }
 
     @Override
@@ -36,17 +34,18 @@ public class SqlStorage implements Storage {
 
     @Override
     public void update(Resume resume) {
-        final Integer updatedRowCount = sqlHelper.execute(
+        sqlHelper.execute(
                 "UPDATE resume SET uuid = ?, full_name = ? WHERE uuid = ?",
                 ps -> {
                     ps.setString(1, resume.getUuid());
                     ps.setString(2, resume.getFullName());
                     ps.setString(3, resume.getUuid());
-                    return ps.executeUpdate();
+                    final int updatedRowCount = ps.executeUpdate();
+                    if (updatedRowCount == 0) {
+                        throw new NotExistStorageException(resume.getUuid());
+                    }
+                    return updatedRowCount;
                 });
-        if (updatedRowCount == 0) {
-            throw new NotExistStorageException(resume.getUuid());
-        }
     }
 
     @Override
@@ -63,16 +62,17 @@ public class SqlStorage implements Storage {
 
     @Override
     public void delete(String uuid) {
-        final Integer updatedRowCount = sqlHelper.execute(
+        sqlHelper.execute(
                 "DELETE FROM resume WHERE uuid = ?",
                 ps -> {
                     ps.setString(1, uuid);
-                    return ps.executeUpdate();
+                    final int updatedRowCount = ps.executeUpdate();
+                    if (updatedRowCount == 0) {
+                        throw new NotExistStorageException(uuid);
+                    }
+                    return updatedRowCount;
                 }
         );
-        if (updatedRowCount == 0) {
-            throw new NotExistStorageException(uuid);
-        }
     }
 
     @Override
