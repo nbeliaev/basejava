@@ -29,7 +29,6 @@ CREATE TABLE contact
         CONSTRAINT contact_resume_uuid_fk references resume on delete cascade,
     type_id     INT      NOT NULL
         CONSTRAINT contact_contact_type_id_fk references contact_type on delete cascade,
-    type        TEXT     NOT NULL,
     value       TEXT     NOT NULL
 );
 

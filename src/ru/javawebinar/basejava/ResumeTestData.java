@@ -1,5 +1,6 @@
 package ru.javawebinar.basejava;
 
+import ru.javawebinar.basejava.model.ContactType;
 import ru.javawebinar.basejava.model.Resume;
 
 public class ResumeTestData {
@@ -12,7 +13,7 @@ public class ResumeTestData {
 
         Resume resume = new Resume(uuid, name);
         resume.setFullName("Григорий Кислин");
-        /*resume.addContact(ContactType.MOBILE_PHONE, "+7(921) 855-0482");
+        resume.addContact(ContactType.MOBILE_PHONE, "+7(921) 855-0482");
         resume.addContact(ContactType.SKYPE, "grigory.kislin");
         resume.addContact(ContactType.EMAIL, "gkislin@yandex.ru");
         resume.addContact(ContactType.LINKEDIN, "https://www.linkedin.com/in/gkislin");
@@ -20,7 +21,7 @@ public class ResumeTestData {
         resume.addContact(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473");
         resume.addContact(ContactType.WEBPAGE, "http://gkislin.ru/");
 
-        Section section;
+        /*Section section;
         section = new SimpleSection("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры.");
         resume.addSection(SectionType.PERSONAL, section);
         section = new SimpleSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям");
