@@ -111,7 +111,32 @@ public class SqlStorage implements Storage {
 
     @Override
     public List<Resume> getAllSorted() {
+        // implementation with query in loop is slower
         return sqlHelper.execute(
+                "SELECT * FROM resume\n" +
+                        "ORDER BY full_name, uuid",
+                ps -> {
+                    List<Resume> resumes = new ArrayList<>();
+                    final ResultSet rs = ps.executeQuery();
+                    while (rs.next()) {
+                        final String uuid = rs.getString("uuid").trim();
+                        Resume resume = new Resume(uuid, rs.getString("full_name"));
+                        sqlHelper.execute(
+                                "SELECT type, value FROM contact\n" +
+                                        "WHERE resume_uuid = ?",
+                                psContacts -> {
+                                    psContacts.setString(1, uuid);
+                                    final ResultSet rsContacts = psContacts.executeQuery();
+                                    while (rsContacts.next()) {
+                                        addContact(rsContacts, resume);
+                                    }
+                                    return null;
+                                });
+                        resumes.add(resume);
+                    }
+                    return resumes;
+                });
+        /*return sqlHelper.execute(
                 "SELECT r.uuid, r.full_name, COALESCE(c.type, '') AS type, c.value\n" +
                         "FROM resume AS r\n" +
                         "   LEFT JOIN contact c ON r.uuid = c.resume_uuid\n" +
@@ -138,7 +163,7 @@ public class SqlStorage implements Storage {
                     }
                     return resumes;
                 }
-        );
+        );*/
     }
 
     private void saveContacts(Connection cn, Resume resume) throws SQLException {
