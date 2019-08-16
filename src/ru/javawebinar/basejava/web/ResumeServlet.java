@@ -20,20 +20,6 @@ public class ResumeServlet extends HttpServlet {
         response.getWriter().write(initPage(request.getParameter("uuid")));
     }
 
-    private List<Resume> getResumes(String uuid) {
-        SqlStorage storage = new SqlStorage(
-                Config.getInstance().getDbUrl(),
-                Config.getInstance().getDbUser(),
-                Config.getInstance().getDbPwd());
-        if (uuid == null) {
-            return storage.getAllSorted();
-        } else {
-            final List<Resume> resumes = new ArrayList<>(1);
-            resumes.add(storage.get(uuid));
-            return resumes;
-        }
-    }
-
     private String initPage(String uuid) {
         StringBuilder htmlString = new StringBuilder();
         htmlString.append("<html'><head><meta charset='utf-8'>");
@@ -50,5 +36,19 @@ public class ResumeServlet extends HttpServlet {
         }
         htmlString.append("</table>").append("</body>").append("</html>");
         return htmlString.toString();
+    }
+
+    private List<Resume> getResumes(String uuid) {
+        SqlStorage storage = new SqlStorage(
+                Config.getInstance().getDbUrl(),
+                Config.getInstance().getDbUser(),
+                Config.getInstance().getDbPwd());
+        if (uuid == null) {
+            return storage.getAllSorted();
+        } else {
+            final List<Resume> resumes = new ArrayList<>(1);
+            resumes.add(storage.get(uuid));
+            return resumes;
+        }
     }
 }
