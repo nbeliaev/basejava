@@ -127,36 +127,34 @@ public class SqlStorage implements Storage {
                 "SELECT * FROM resume\n" +
                         "ORDER BY full_name, uuid",
                 ps -> {
-                    List<Resume> resumes = new ArrayList<>();
                     final ResultSet rs = ps.executeQuery();
+                    Map<String, Resume> resumes = new LinkedHashMap<>();
                     while (rs.next()) {
                         final String uuid = rs.getString("uuid").trim();
                         Resume resume = new Resume(uuid, rs.getString("full_name"));
-                        sqlHelper.execute(
-                                "SELECT type, value FROM contact\n" +
-                                        "WHERE resume_uuid = ?",
-                                psContacts -> {
-                                    psContacts.setString(1, uuid);
-                                    final ResultSet rsContacts = psContacts.executeQuery();
-                                    while (rsContacts.next()) {
-                                        addContact(rsContacts, resume);
-                                    }
-                                    return null;
-                                });
-                        sqlHelper.execute(
-                                "SELECT type, value FROM section\n" +
-                                        "WHERE resume_uuid = ?",
-                                psSections -> {
-                                    psSections.setString(1, resume.getUuid());
-                                    final ResultSet rsSections = psSections.executeQuery();
-                                    while (rsSections.next()) {
-                                        addSection(rsSections, resume);
-                                    }
-                                    return null;
-                                });
-                        resumes.add(resume);
+                        resumes.put(uuid, resume);
                     }
-                    return resumes;
+                    rs.close();
+                    sqlHelper.execute(
+                            "SELECT resume_uuid, type, value, 0 AS splitter " +
+                                    "FROM contact\n" +
+                                    "UNION ALL\n" +
+                                    "SELECT resume_uuid, type, value, 1 " +
+                                    "FROM section",
+                            psDetails -> {
+                                final ResultSet resultSet = psDetails.executeQuery();
+                                final int isSection = 1;
+                                while (resultSet.next()) {
+                                    final Resume resume = resumes.get(resultSet.getString("resume_uuid").trim());
+                                    if (resultSet.getInt("splitter") != isSection) {
+                                        addContact(resultSet, resume);
+                                    } else {
+                                        addSection(resultSet, resume);
+                                    }
+                                }
+                                return null;
+                            });
+                    return new ArrayList<>(resumes.values());
                 });
     }
 
@@ -196,9 +194,7 @@ public class SqlStorage implements Storage {
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
                         final List<String> content = ((ListSection) e.getValue()).getContent();
-                        StringBuilder builder = new StringBuilder();
-                        content.forEach(s -> builder.append(s).append("\n"));
-                        ps.setString(3, builder.toString());
+                        ps.setString(3, String.join("\n", content));
                         break;
                 }
                 ps.addBatch();
