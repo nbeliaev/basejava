@@ -123,39 +123,36 @@ public class SqlStorage implements Storage {
 
     @Override
     public List<Resume> getAllSorted() {
-        return sqlHelper.execute(
-                "SELECT * FROM resume\n" +
-                        "ORDER BY full_name, uuid",
-                ps -> {
-                    final ResultSet rs = ps.executeQuery();
-                    Map<String, Resume> resumes = new LinkedHashMap<>();
-                    while (rs.next()) {
-                        final String uuid = rs.getString("uuid").trim();
-                        Resume resume = new Resume(uuid, rs.getString("full_name"));
-                        resumes.put(uuid, resume);
-                    }
-                    rs.close();
-                    sqlHelper.execute(
-                            "SELECT resume_uuid, type, value, 0 AS splitter " +
-                                    "FROM contact\n" +
-                                    "UNION ALL\n" +
-                                    "SELECT resume_uuid, type, value, 1 " +
-                                    "FROM section",
-                            psDetails -> {
-                                final ResultSet resultSet = psDetails.executeQuery();
-                                final int isSection = 1;
-                                while (resultSet.next()) {
-                                    final Resume resume = resumes.get(resultSet.getString("resume_uuid").trim());
-                                    if (resultSet.getInt("splitter") != isSection) {
-                                        addContact(resultSet, resume);
-                                    } else {
-                                        addSection(resultSet, resume);
-                                    }
-                                }
-                                return null;
-                            });
-                    return new ArrayList<>(resumes.values());
-                });
+        return sqlHelper.executeTransaction(cn -> {
+            Map<String, Resume> resumes = new LinkedHashMap<>();
+            try (final PreparedStatement ps = cn.prepareStatement("SELECT * FROM resume ORDER BY full_name, uuid")) {
+                final ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    final String uuid = rs.getString("uuid").trim();
+                    Resume resume = new Resume(uuid, rs.getString("full_name"));
+                    resumes.put(uuid, resume);
+                }
+            }
+            try (final PreparedStatement ps = cn.prepareStatement(
+                    "SELECT resume_uuid, type, value\n" +
+                            "FROM contact")) {
+                final ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    final Resume resume = getResume(resumes, rs.getString("resume_uuid").trim());
+                    addContact(rs, resume);
+                }
+            }
+            try (final PreparedStatement ps = cn.prepareStatement(
+                    "SELECT resume_uuid, type, value\n" +
+                            "FROM section")) {
+                final ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    final Resume resume = getResume(resumes, rs.getString("resume_uuid").trim());
+                    addSection(rs, resume);
+                }
+            }
+            return new ArrayList<>(resumes.values());
+        });
     }
 
     private void saveContacts(Connection cn, Resume resume) throws SQLException {
@@ -227,5 +224,13 @@ public class SqlStorage implements Storage {
             ps.setString(1, uuid);
             ps.executeUpdate();
         }
+    }
+
+    private Resume getResume(Map<String, Resume> resumes, String uuid) {
+        final Resume resume = resumes.get(uuid);
+        if (resume == null) {
+            throw new NotExistStorageException(uuid);
+        }
+        return resume;
     }
 }
