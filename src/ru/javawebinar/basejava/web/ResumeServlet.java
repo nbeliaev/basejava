@@ -13,6 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ResumeServlet extends HttpServlet {
+    private final SqlStorage storage = new SqlStorage(
+            Config.getInstance().getDbUrl(),
+            Config.getInstance().getDbUser(),
+            Config.getInstance().getDbPwd());
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
@@ -39,10 +44,6 @@ public class ResumeServlet extends HttpServlet {
     }
 
     private List<Resume> getResumes(String uuid) {
-        SqlStorage storage = new SqlStorage(
-                Config.getInstance().getDbUrl(),
-                Config.getInstance().getDbUser(),
-                Config.getInstance().getDbPwd());
         if (uuid == null) {
             return storage.getAllSorted();
         } else {
