@@ -3,6 +3,7 @@ package ru.javawebinar.basejava.web;
 import ru.javawebinar.basejava.Config;
 import ru.javawebinar.basejava.model.Resume;
 import ru.javawebinar.basejava.storage.SqlStorage;
+import ru.javawebinar.basejava.storage.Storage;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ResumeServlet extends HttpServlet {
-    private final SqlStorage storage = new SqlStorage(
+    private final Storage storage = new SqlStorage(
             Config.getInstance().getDbUrl(),
             Config.getInstance().getDbUser(),
             Config.getInstance().getDbPwd());
