@@ -9,6 +9,7 @@
     <title>Resumes list</title>
 </head>
 <body>
+<jsp:include page="fragments/header.jsp"/>
 <section>
     <table class=table>
         <thead>
@@ -40,5 +41,6 @@
         %>
     </table>
 </section>
+<jsp:include page="fragments/footer.jsp"/>
 </body>
 </html>
