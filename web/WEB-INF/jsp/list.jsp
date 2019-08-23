@@ -1,6 +1,5 @@
-<%@ page import="ru.javawebinar.basejava.model.Resume" %>
-<%@ page import="java.util.List" %>
 <%@ page import="ru.javawebinar.basejava.model.ContactType" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
@@ -21,24 +20,15 @@
             <th scope='col'>delete</th>
         </tr>
         </thead>
-        <%
-            final List<Resume> resumes = (List<Resume>) request.getAttribute("resumes");
-            for (int i = 0; i < resumes.size(); i++) {
-        %>
-        <tr>
-            <th scope='row'><%=i%>
-            </th>
-            <td>
-                <a href="resume?=<%=resumes.get(i).getUuid()%>"><%=resumes.get(i).getFullName()%>
-                </a>
-            </td>
-            <td>
-                <%=resumes.get(i).getContact(ContactType.EMAIL)%>
-            </td>
-        </tr>
-        <%
-            }
-        %>
+        <jsp:useBean id="resumes" scope="request" type="java.util.List"/>
+        <c:forEach var="resume" items="${resumes}" varStatus="loop">
+            <jsp:useBean id="resume" class="ru.javawebinar.basejava.model.Resume"/>
+            <tr>
+                <th scope='row'>${loop.index} </th>
+                <td><a href="resume?=${resume.uuid}">${resume.fullName} </a></td>
+                <td> ${resume.getContact(ContactType.EMAIL)} </td>
+            </tr>
+        </c:forEach>
     </table>
 </section>
 <jsp:include page="fragments/footer.jsp"/>
