@@ -138,7 +138,7 @@ public class SqlStorage implements Storage {
                             "FROM contact")) {
                 final ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
-                    final Resume resume = getResume(resumes, rs.getString("resume_uuid").trim());
+                    final Resume resume = resumes.get(rs.getString("resume_uuid").trim());
                     addContact(rs, resume);
                 }
             }
@@ -147,7 +147,7 @@ public class SqlStorage implements Storage {
                             "FROM section")) {
                 final ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
-                    final Resume resume = getResume(resumes, rs.getString("resume_uuid").trim());
+                    final Resume resume = resumes.get(rs.getString("resume_uuid").trim());
                     addSection(rs, resume);
                 }
             }
@@ -224,13 +224,5 @@ public class SqlStorage implements Storage {
             ps.setString(1, uuid);
             ps.executeUpdate();
         }
-    }
-
-    private Resume getResume(Map<String, Resume> resumes, String uuid) {
-        final Resume resume = resumes.get(uuid);
-        if (resume == null) {
-            throw new NotExistStorageException(uuid);
-        }
-        return resume;
     }
 }
