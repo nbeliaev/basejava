@@ -49,8 +49,16 @@ public class Resume implements Comparable<Resume>, Serializable {
         contacts.put(type, content);
     }
 
+    public void removeContact(ContactType type) {
+        contacts.remove(type);
+    }
+
     public void addSection(SectionType type, Section section) {
         sections.put(type, section);
+    }
+
+    public void removeSection(SectionType type) {
+        sections.remove(type);
     }
 
     public Map<ContactType, String> getContacts() {
