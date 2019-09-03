@@ -11,7 +11,8 @@
 <body>
 <jsp:include page="fragments/header.jsp"/>
 <section>
-    <h2>${resume.fullName}&ensp;<a href="resume?uuid=${resume.uuid}&action=edit"><img src="img/edit.png" alt="edit"></a></h2>
+    <h2>${resume.fullName}&ensp;<a href="resume?uuid=${resume.uuid}&action=edit"><img src="img/edit.png" alt="edit"></a>
+    </h2>
     <br>
     <section class="">
         <h4>Contacts</h4>
@@ -28,20 +29,22 @@
         </table>
     </section>
     <hr>
-    <section>
-        <h4>Characteristics</h4>
-        <table class=table>
-            <c:forEach var="sectionEntry" items="${resume.sections}">
-                <jsp:useBean id="sectionEntry"
-                             type="java.util.Map.Entry<ru.javawebinar.basejava.model.SectionType, ru.javawebinar.basejava.model.Section>"/>
-                <tr>
-                    <td>${sectionEntry.key.title}</td>
-                    <td><%=HtmlUtil.sectionPreview(sectionEntry)%>
-                    </td>
-                </tr>
-            </c:forEach>
-        </table>
-    </section>
+    <c:if test="${resume.sections.size() != 0}">
+        <section>
+            <h4>Characteristics</h4>
+            <table class=table>
+                <c:forEach var="sectionEntry" items="${resume.sections}">
+                    <jsp:useBean id="sectionEntry"
+                                 type="java.util.Map.Entry<ru.javawebinar.basejava.model.SectionType, ru.javawebinar.basejava.model.Section>"/>
+                    <tr>
+                        <td>${sectionEntry.key.title}</td>
+                        <td><%=HtmlUtil.sectionPreview(sectionEntry)%>
+                        </td>
+                    </tr>
+                </c:forEach>
+            </table>
+        </section>
+    </c:if>
 </section>
 </body>
 </html>

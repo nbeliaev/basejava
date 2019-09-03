@@ -1,6 +1,10 @@
 package ru.javawebinar.basejava;
 
 import ru.javawebinar.basejava.model.*;
+import ru.javawebinar.basejava.util.DateUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ResumeTestData {
 
@@ -38,7 +42,7 @@ public class ResumeTestData {
                 "DB: PostgreSQL(наследование, pgplsql, PL/Python), Redis (Jedis), H2, Oracle");
         resume.addSection(SectionType.QUALIFICATIONS, section);
 
-       /* List<Organization> experience = new ArrayList<>();
+        List<Organization> experience = new ArrayList<>();
         Organization organization;
         organization = new Organization(
                 "Java Online Projects",
@@ -95,7 +99,7 @@ public class ResumeTestData {
         education.add(organization);
 
         section = new OrganizationSection(education);
-        resume.addSection(SectionType.EDUCATION, section);*/
+        resume.addSection(SectionType.EDUCATION, section);
 
         return resume;
     }

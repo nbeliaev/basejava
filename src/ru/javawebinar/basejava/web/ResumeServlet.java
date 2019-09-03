@@ -4,6 +4,8 @@ import ru.javawebinar.basejava.Config;
 import ru.javawebinar.basejava.model.*;
 import ru.javawebinar.basejava.storage.SqlStorage;
 import ru.javawebinar.basejava.storage.Storage;
+import ru.javawebinar.basejava.util.DateUtil;
+import ru.javawebinar.basejava.util.StringUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -11,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ResumeServlet extends HttpServlet {
@@ -32,25 +36,25 @@ public class ResumeServlet extends HttpServlet {
                 case "delete":
                     storage.delete(uuid);
                     resp.sendRedirect("resume");
-                    break;
+                    return;
                 case "edit":
+                case "view":
                     r = storage.get(uuid);
-                    req.setAttribute("resume", r);
-                    req.getRequestDispatcher("/WEB-INF/jsp/edit.jsp").forward(req, resp);
                     break;
                 case "create":
                     r = new Resume();
-                    req.setAttribute("resume", r);
-                    req.getRequestDispatcher("/WEB-INF/jsp/edit.jsp").forward(req, resp);
-                    break;
-                case "view":
-                    r = storage.get(uuid);
-                    req.setAttribute("resume", r);
-                    req.getRequestDispatcher("/WEB-INF/jsp/view.jsp").forward(req, resp);
+                    List<Organization> orgs = new ArrayList<>();
+                    final Organization org = new Organization("", new Organization.Position());
+                    orgs.add(org);
+                    Section section = new OrganizationSection(orgs);
+                    r.addSection(SectionType.EXPERIENCE, section);
+                    r.addSection(SectionType.EDUCATION, section);
                     break;
                 default:
                     throw new IllegalArgumentException(action + " is not supported.");
             }
+            req.setAttribute("resume", r);
+            req.getRequestDispatcher("/WEB-INF/jsp/" + (action.equals("view") ? "view.jsp" : "edit.jsp")).forward(req, resp);
         }
     }
 
@@ -76,7 +80,10 @@ public class ResumeServlet extends HttpServlet {
         }
         for (SectionType type : SectionType.values()) {
             final String value = req.getParameter(type.name());
-            if (value != null && !value.trim().isEmpty()) {
+            final String[] values = req.getParameterValues(type.name());
+            if (StringUtil.isBlank(value) || values.length == 0) {
+                resume.removeSection(type);
+            } else {
                 Section section;
                 switch (type) {
                     case PERSONAL:
@@ -87,12 +94,37 @@ public class ResumeServlet extends HttpServlet {
                     case QUALIFICATIONS:
                         section = new ListSection(List.of(value.split("\n")));
                         break;
+                    case EXPERIENCE:
+                    case EDUCATION:
+                        List<Organization> organizations = new ArrayList<>();
+                        for (int i = 0; i < values.length; i++) {
+                            if (StringUtil.isBlank(values[i])) {
+                                continue;
+                            }
+                            final String prfx = type.name() + i;
+                            final String link = req.getParameter(prfx + "link");
+                            List<Organization.Position> positions = new ArrayList<>();
+                            final String[] startDates = req.getParameterValues(prfx + "start");
+                            final String[] endDates = req.getParameterValues(prfx + "end");
+                            final String[] titles = req.getParameterValues(prfx + "title");
+                            final String[] descriptions = req.getParameterValues(prfx + "description");
+                            for (int j = 0; j < startDates.length; j++) {
+                                Organization.Position position = new Organization.Position(
+                                        startDates[j].isEmpty() ? DateUtil.NOW : LocalDate.parse(startDates[j]),
+                                        endDates[j].isEmpty() ? DateUtil.NOW : LocalDate.parse(endDates[j]),
+                                        titles[j],
+                                        descriptions[j]);
+                                positions.add(position);
+                            }
+                            Organization organization = new Organization(values[i], link, positions);
+                            organizations.add(organization);
+                        }
+                        section = new OrganizationSection(organizations);
+                        break;
                     default:
                         throw new IllegalArgumentException("Unknown section type");
                 }
                 resume.addSection(type, section);
-            } else {
-                resume.removeSection(type);
             }
         }
         if (uuid.isEmpty()) {
