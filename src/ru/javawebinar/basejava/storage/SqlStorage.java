@@ -184,22 +184,8 @@ public class SqlStorage implements Storage {
                 ps.setString(1, r.getUuid());
                 final SectionType type = e.getKey();
                 ps.setString(2, type.name());
-                switch (type) {
-                    case PERSONAL:
-                    case OBJECTIVE:
-                        ps.setString(3, ((SimpleSection) e.getValue()).getContent());
-                        break;
-                    case ACHIEVEMENT:
-                    case QUALIFICATIONS:
-                        final List<String> content = ((ListSection) e.getValue()).getContent();
-                        ps.setString(3, String.join("\n", content));
-                        break;
-                    case EXPERIENCE:
-                    case EDUCATION:
-                        String result = JsonParser.write(e.getValue(), Section.class);
-                        ps.setString(3, result);
-                        break;
-                }
+                String result = JsonParser.write(e.getValue(), Section.class);
+                ps.setString(3, result);
                 ps.addBatch();
             }
             ps.executeBatch();
@@ -210,23 +196,8 @@ public class SqlStorage implements Storage {
         final String ct = rs.getString("type");
         if (!ct.isEmpty()) {
             final SectionType type = SectionType.valueOf(ct);
-            switch (type) {
-                case PERSONAL:
-                case OBJECTIVE:
-                    r.addSection(type, new SimpleSection(rs.getString("value")));
-                    break;
-                case ACHIEVEMENT:
-                case QUALIFICATIONS:
-                    final String value = rs.getString("value");
-                    String[] values = value.split("\n");
-                    r.addSection(type, new ListSection(Arrays.asList(values)));
-                    break;
-                case EXPERIENCE:
-                case EDUCATION:
-                    final Section section = JsonParser.read(rs.getString("value"), Section.class);
-                    r.addSection(type, section);
-                    break;
-            }
+            final Section section = JsonParser.read(rs.getString("value"), Section.class);
+            r.addSection(type, section);
         }
     }
 
