@@ -43,12 +43,6 @@ public class ResumeServlet extends HttpServlet {
                     break;
                 case "create":
                     r = new Resume();
-                    List<Organization> orgs = new ArrayList<>();
-                    final Organization org = new Organization("", new Organization.Position());
-                    orgs.add(org);
-                    Section section = new OrganizationSection(orgs);
-                    r.addSection(SectionType.EXPERIENCE, section);
-                    r.addSection(SectionType.EDUCATION, section);
                     break;
                 default:
                     throw new IllegalArgumentException(action + " is not supported.");
@@ -81,7 +75,7 @@ public class ResumeServlet extends HttpServlet {
         for (SectionType type : SectionType.values()) {
             final String value = req.getParameter(type.name());
             final String[] values = req.getParameterValues(type.name());
-            if (StringUtil.isBlank(value) || values.length == 0) {
+            if (StringUtil.isBlank(value) && values == null) {
                 resume.removeSection(type);
             } else {
                 Section section;

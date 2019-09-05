@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="css/styles.css">
-    <script src="script/script.js"></script>
+    <script type="text/javascript" src="script/script.js"></script>
     <jsp:useBean id="resume" scope="request" class="ru.javawebinar.basejava.model.Resume"/>
     <title>Резюме ${resume.fullName}</title>
 </head>
@@ -46,8 +46,7 @@
                     <c:when test="${section==SectionType.ACHIEVEMENT || section==SectionType.QUALIFICATIONS}">
                         <c:set var="currentSection" value="${resume.getSection(section)}"/>
                         <c:if test="${currentSection != null}">
-                            <dd><textarea name="${section.name()}" class="form-control">
-                            <%=String.join("\n", ((ListSection) resume.getSection(section)).getContent())%></textarea>
+                            <dd><textarea name="${section.name()}" class="form-control" rows="3"><%=String.join("\n", ((ListSection) resume.getSection(section)).getContent())%></textarea>
                         </c:if>
                         <c:if test="${currentSection == null}">
                             <dd><textarea name="${section.name()}" class="form-control"></textarea>
@@ -55,66 +54,69 @@
                         </dd>
                     </c:when>
                     <c:when test="${section==SectionType.EXPERIENCE || section==SectionType.EDUCATION}">
-                        <c:forEach var="organization" items="${resume.getSection(section).getContent()}"
-                                   varStatus="counter">
-                            <div id="${section.name()}${counter.index}">
-                                <button type="button" onclick="deleteDiv(${section.name()}${counter.index})"
-                                        class="btn btn-link">
-                                    delete
-                                </button>
-                                <dl>
-                                    <dt>Name:</dt>
-                                    <dd>
-                                        <input type="text" name="${section.name()}"
-                                               class="form-control"
-                                               value="${organization.link.name}">
-                                    </dd>
-                                </dl>
-                                <dl>
-                                    <dt>URL:</dt>
-                                    <dd>
-                                        <input type="text" name="${section.name()}${counter.index}link"
-                                               class="form-control"
-                                               value="${organization.link.url}">
-                                    </dd>
-                                </dl>
-                                <c:forEach var="position" items="${organization.getPositions()}">
+                        <button type="button" id="${section.name()}" onclick="addSection(this.id)" class="btn btn-outline-success">add</button>
+                        <div id="${section.name()}main">
+                            <c:forEach var="organization" items="${resume.getSection(section).getContent()}"
+                                       varStatus="counter">
+                                <div id="${section.name()}${counter.index}">
+                                    <button type="button" onclick="deleteDiv(${section.name()}${counter.index})"
+                                            class="btn btn-link">
+                                        delete
+                                    </button>
                                     <dl>
-                                        <dt>Start date:</dt>
+                                        <dt>Name:</dt>
                                         <dd>
-                                            <input type="date" name="${section.name()}${counter.index}start"
+                                            <input type="text" name="${section.name()}"
                                                    class="form-control"
-                                                   value="${position.beginDate}">
+                                                   value="${organization.link.name}">
                                         </dd>
                                     </dl>
                                     <dl>
-                                        <dt>End date:</dt>
+                                        <dt>URL:</dt>
                                         <dd>
-                                            <input type="date" name="${section.name()}${counter.index}end"
+                                            <input type="text" name="${section.name()}${counter.index}link"
                                                    class="form-control"
-                                                   value="${position.endDate}">
+                                                   value="${organization.link.url}">
                                         </dd>
                                     </dl>
-                                    <dl>
-                                        <dt>Title:</dt>
-                                        <dd>
-                                            <input type="text" name="${section.name()}${counter.index}title"
-                                                   class="form-control"
-                                                   value="${position.title}">
-                                        </dd>
-                                    </dl>
-                                    <dl>
-                                        <dt>Description:</dt>
-                                        <dd>
-                                            <input type="text" name="${section.name()}${counter.index}description"
-                                                   class="form-control"
-                                                   value="${position.description}">
-                                        </dd>
-                                    </dl>
-                                </c:forEach>
-                                <hr>
-                            </div>
-                        </c:forEach>
+                                    <c:forEach var="position" items="${organization.getPositions()}">
+                                        <dl>
+                                            <dt>Start date:</dt>
+                                            <dd>
+                                                <input type="date" name="${section.name()}${counter.index}start"
+                                                       class="form-control"
+                                                       value="${position.beginDate}">
+                                            </dd>
+                                        </dl>
+                                        <dl>
+                                            <dt>End date:</dt>
+                                            <dd>
+                                                <input type="date" name="${section.name()}${counter.index}end"
+                                                       class="form-control"
+                                                       value="${position.endDate}">
+                                            </dd>
+                                        </dl>
+                                        <dl>
+                                            <dt>Title:</dt>
+                                            <dd>
+                                                <input type="text" name="${section.name()}${counter.index}title"
+                                                       class="form-control"
+                                                       value="${position.title}">
+                                            </dd>
+                                        </dl>
+                                        <dl>
+                                            <dt>Description:</dt>
+                                            <dd>
+                                                <input type="text" name="${section.name()}${counter.index}description"
+                                                       class="form-control"
+                                                       value="${position.description}">
+                                            </dd>
+                                        </dl>
+                                    </c:forEach>
+                                    <hr>
+                                </div>
+                            </c:forEach>
+                        </div>
                     </c:when>
                 </c:choose>
             </dl>
