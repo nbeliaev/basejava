@@ -77,6 +77,8 @@ public class ResumeServlet extends HttpServlet {
             final String[] values = req.getParameterValues(type.name());
             if (StringUtil.isBlank(value) && values == null) {
                 resume.removeSection(type);
+            } else if (values.length == 1 && values[0].isEmpty()) {
+                resume.removeSection(type);
             } else {
                 Section section;
                 switch (type) {
